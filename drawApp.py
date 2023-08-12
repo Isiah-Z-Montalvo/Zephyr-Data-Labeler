@@ -4,6 +4,10 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
+from PIL import *
+from PIL import Image, ImageTk
+import os
+from os import listdir
 
 def run():
 	master = Tk()
@@ -12,6 +16,22 @@ def run():
 	
 	def selectFolder():
 		path = askdirectory(title="Select Folder")
+		print(path)
+		storeImages(path)
+		return
+	
+	def storeImages(path):
+		images = []
+		for image in os.listdir(path):
+			if (image.endswith(".jpg") or image.endswith(".jpeg") or image.endswith(".png")):
+				images.append(image)
+		print(images[0])
+		galleryPreview(path, images)
+		return
+	
+	def galleryPreview(path, images):
+		for img in images:
+			
 	
 	menuBar = Menu(master)
 	fileMenu = Menu(menuBar, tearoff = 0)
