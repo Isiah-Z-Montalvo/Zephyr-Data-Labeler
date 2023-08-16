@@ -30,8 +30,19 @@ def run():
 		return
 	
 	def galleryPreview(path, images):
+		c = 0
 		for img in images:
+			fullPath = path + "/" + img
+			pic = Image.open(fullPath)
+			picCopy = pic.copy()
+			picCopy.thumbnail((200, 200))
+			picPI = ImageTk.PhotoImage(picCopy)
 			
+			picLabel = Label(master, image = picPI)
+			picLabel.image = picPI
+			picLabel.grid(row = 0, column = c, padx = 5)
+			c += 1
+		return
 	
 	menuBar = Menu(master)
 	fileMenu = Menu(menuBar, tearoff = 0)
