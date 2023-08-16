@@ -31,6 +31,8 @@ def run():
 	
 	def galleryPreview(path, images):
 		c = 0
+		galleryFrame = LabelFrame(master, text = "Gallery Preview")
+		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
 		for img in images:
 			fullPath = path + "/" + img
 			pic = Image.open(fullPath)
@@ -38,7 +40,7 @@ def run():
 			picCopy.thumbnail((200, 200))
 			picPI = ImageTk.PhotoImage(picCopy)
 			
-			picLabel = Label(master, image = picPI)
+			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
 			picLabel.grid(row = 0, column = c, padx = 5)
 			c += 1
