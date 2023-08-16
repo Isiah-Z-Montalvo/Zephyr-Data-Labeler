@@ -10,32 +10,36 @@ from PIL import Image, ImageTk
 import os
 from os import listdir
 
+path = ""
+images = []
+
 def run():
 	master = Tk()
 	master.title("Zephyr Data Labeler")
 	master.geometry("1000x1000")
 	
 	def selectFolder():
+		global path
 		path = askdirectory(title="Select Folder")
-		storeImages(path)
+		storeImages()
 		return
 	
-	def storeImages(path):
-		images = []
+	def storeImages():
+		global images
 		for image in os.listdir(path):
 			if (image.endswith(".jpg") or image.endswith(".jpeg") or image.endswith(".png")):
-				images.append(image)
-		galleryPreview(path, images)
+				fullPath = path + "/" + image
+				images.append(fullPath)
+		galleryPreview()
 		return
 	
-	def galleryPreview(path, images):
+	def galleryPreview():
 		r = 0
 		c = 0
 		galleryFrame = LabelFrame(master, text = "Gallery Preview")
 		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
 		for img in images:
-			fullPath = path + "/" + img
-			pic = Image.open(fullPath)
+			pic = Image.open(img)
 			picCopy = pic.copy()
 			picCopy.thumbnail((200, 200))
 			picPI = ImageTk.PhotoImage(picCopy)
