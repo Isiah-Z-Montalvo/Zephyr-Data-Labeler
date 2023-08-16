@@ -17,7 +17,6 @@ def run():
 	
 	def selectFolder():
 		path = askdirectory(title="Select Folder")
-		print(path)
 		storeImages(path)
 		return
 	
@@ -26,7 +25,6 @@ def run():
 		for image in os.listdir(path):
 			if (image.endswith(".jpg") or image.endswith(".jpeg") or image.endswith(".png")):
 				images.append(image)
-		print(images[0])
 		galleryPreview(path, images)
 		return
 	
