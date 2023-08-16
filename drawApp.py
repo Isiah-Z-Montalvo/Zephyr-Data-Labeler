@@ -1,6 +1,7 @@
 # This will import all the widgets
 # and modules which are available in
 # tkinter and ttk module
+import math
 from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
@@ -30,6 +31,7 @@ def run():
 		return
 	
 	def galleryPreview(path, images):
+		r = 0
 		c = 0
 		galleryFrame = LabelFrame(master, text = "Gallery Preview")
 		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
@@ -42,8 +44,13 @@ def run():
 			
 			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
-			picLabel.grid(row = 0, column = c, padx = 5)
+			picLabel.grid(row = r, column = c, padx = 5)
 			c += 1
+			
+			master.update()
+			if c == math.floor(master.winfo_width() / picLabel.winfo_width()):
+				c = 0
+				r += 1
 		return
 	
 	menuBar = Menu(master)
