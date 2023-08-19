@@ -12,7 +12,7 @@ from os import listdir
 
 path = ""
 images = []
-galleryState = False
+resizingState = False
 
 def run():
 	master = Tk()
@@ -39,8 +39,6 @@ def run():
 		return
 	
 	def galleryPreview():
-		global galleryState
-		galleryState = True
 		r = 0
 		c = 0
 		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
@@ -62,15 +60,14 @@ def run():
 		return
 	
 	def resizeGallery(event):
-		if not hasattr(resizeGallery, "resizing"):
-			resizeGallery.resizing = False
+		global resizingState
 		
-		if not resizeGallery.resizing:
-			resizeGallery.resizing = True
+		if not resizingState:
+			resizingState = True
 			for label in galleryFrame.winfo_children():
 				label.destroy()
 			galleryPreview()
-			resizeGallery.resizing = False
+			resizingState = False
 		return
 	
 	menuBar = Menu(master)
