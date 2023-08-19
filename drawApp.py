@@ -54,7 +54,7 @@ def run():
 		r = 0
 		c = 0
 		for label in galleryFrame.winfo_children():
-			label.grid(row = r, column = c, padx = 5)
+			label.grid(row = r, column = c, padx = 5, pady = 5)
 			c += 1
 			master.update()
 			if c == math.floor(master.winfo_width() / label.winfo_width()):
