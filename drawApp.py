@@ -61,12 +61,17 @@ def run():
 	
 	def resizeGallery(event):
 		global resizingState
-		
+		r = 0
+		c = 0
 		if not resizingState:
 			resizingState = True
 			for label in galleryFrame.winfo_children():
-				label.destroy()
-			galleryPreview()
+				label.grid(row = r, column = c, padx = 5)
+				c += 1
+				master.update()
+				if c == math.floor(master.winfo_width() / label.winfo_width()):
+					c = 0
+					r += 1
 			resizingState = False
 		return
 	
