@@ -35,13 +35,10 @@ def run():
 				(image.endswith(".png"))):
 				fullPath = path + "/" + image
 				images.append(fullPath)
-		galleryPreview()
+		assignGalleryLabels()
 		return
 	
-	def galleryPreview():
-		r = 0
-		c = 0
-		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
+	def assignGalleryLabels():
 		for img in images:
 			pic = Image.open(img)
 			picCopy = pic.copy()
@@ -50,28 +47,32 @@ def run():
 			
 			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
-			picLabel.grid(row = r, column = c, padx = 5)
+		galleryPreview()
+		return
+	
+	def renderGallery():
+		r = 0
+		c = 0
+		for label in galleryFrame.winfo_children():
+			label.grid(row = r, column = c, padx = 5)
 			c += 1
-			
 			master.update()
-			if c == math.floor(master.winfo_width() / picLabel.winfo_width()):
+			if c == math.floor(master.winfo_width() / label.winfo_width()):
 				c = 0
 				r += 1
 		return
 	
+	def galleryPreview():
+		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
+		renderGallery()
+		return
+	
 	def resizeGallery(event):
 		global resizingState
-		r = 0
-		c = 0
+		
 		if not resizingState:
 			resizingState = True
-			for label in galleryFrame.winfo_children():
-				label.grid(row = r, column = c, padx = 5)
-				c += 1
-				master.update()
-				if c == math.floor(master.winfo_width() / label.winfo_width()):
-					c = 0
-					r += 1
+			renderGallery()
 			resizingState = False
 		return
 	
