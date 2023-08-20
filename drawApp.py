@@ -19,7 +19,10 @@ def run():
 	master.title("Zephyr Data Labeler")
 	master.geometry("1000x1000")
 	
-	galleryFrame = LabelFrame(master, text = "Gallery Preview")
+	galleryContainer = Frame(master)
+	galleryCanvas = Canvas(galleryContainer)
+	galleryScrollbar = Scrollbar(galleryContainer, orient = "vertical", command = galleryCanvas.yview)
+	galleryFrame = LabelFrame(galleryCanvas, text = "Gallery Preview")
 	
 	def selectFolder():
 		global path
@@ -60,10 +63,15 @@ def run():
 			if c == math.floor(master.winfo_width() / label.winfo_width()):
 				c = 0
 				r += 1
+		galleryCanvas.configure(width = galleryFrame.winfo_width(), height = master.winfo_height() - 200)
 		return
 	
 	def galleryPreview():
-		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
+		galleryCanvas.create_window((0, 0), window = galleryFrame, anchor="nw")
+		galleryCanvas.configure(yscrollcommand = galleryScrollbar.set)
+		galleryContainer.grid(row = 0, column = 0, padx = 20, pady = 20)
+		galleryCanvas.grid(row = 0, column = 0, padx = 20, pady = 20)
+		galleryScrollbar.grid(row = 0, column = 1, padx = 20, pady = 20)
 		renderGallery()
 		return
 	
@@ -84,6 +92,7 @@ def run():
 	master.config(menu = menuBar)
 	
 	master.bind("<Configure>", resizeGallery)
+	galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 	
 	# mainloop, runs infinitely
 	mainloop()
