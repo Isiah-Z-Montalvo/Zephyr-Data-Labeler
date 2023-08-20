@@ -19,7 +19,7 @@ def run():
 	master.title("Zephyr Data Labeler")
 	master.geometry("1000x1000")
 	
-	galleryCanvas = Canvas(master)
+	galleryFrame = LabelFrame(master, text = "Gallery Preview")
 	
 	def selectFolder():
 		global path
@@ -45,7 +45,7 @@ def run():
 			picCopy.thumbnail((200, 200))
 			picPI = ImageTk.PhotoImage(picCopy)
 			
-			picLabel = Label(galleryCanvas, image = picPI)
+			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
 		galleryPreview()
 		return
@@ -53,7 +53,7 @@ def run():
 	def renderGallery():
 		r = 0
 		c = 0
-		for label in galleryCanvas.winfo_children():
+		for label in galleryFrame.winfo_children():
 			label.grid(row = r, column = c, padx = 5, pady = 5)
 			c += 1
 			master.update()
@@ -63,7 +63,7 @@ def run():
 		return
 	
 	def galleryPreview():
-		galleryCanvas.grid(row = 0, column = 0, padx = 20, pady = 20)
+		galleryFrame.grid(row = 0, column = 0, padx = 20, pady = 20)
 		renderGallery()
 		return
 	
