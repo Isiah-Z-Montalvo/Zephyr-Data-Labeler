@@ -63,7 +63,7 @@ def run():
 			if c == math.floor(master.winfo_width() / label.winfo_width()):
 				c = 0
 				r += 1
-		galleryCanvas.configure(width = galleryFrame.winfo_width(), height = master.winfo_height() - 200)
+		galleryCanvas.configure(width = galleryFrame.winfo_width(), height = master.winfo_height() - 150)
 		return
 	
 	def galleryPreview():
