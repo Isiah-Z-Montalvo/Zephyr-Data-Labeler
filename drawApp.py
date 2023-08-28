@@ -17,6 +17,7 @@ resizingState = False
 def run():
 	master = Tk()
 	master.title("Zephyr Data Labeler")
+	master.config(bg="#26242f")
 	master.geometry("1000x1000")
 	
 	galleryContainer = Frame(master)
@@ -84,10 +85,22 @@ def run():
 			resizingState = False
 		return
 	
+	def switchLight():
+		master.config(bg="white")
+		return
+	
+	def switchDark():
+		master.config(bg="#26242f")
+		return
+	
 	menuBar = Menu(master)
 	fileMenu = Menu(menuBar, tearoff = 0)
+	themeMenu = Menu(menuBar, tearoff = 0)
 	menuBar.add_cascade(label ='File', menu = fileMenu)
+	menuBar.add_cascade(label = 'Themes', menu = themeMenu)
 	fileMenu.add_command(label ='Open Folder', command = selectFolder)
+	themeMenu.add_command(label = "Light", command = switchLight)
+	themeMenu.add_command(label = "Dark", command = switchDark)
 	
 	master.config(menu = menuBar)
 	
