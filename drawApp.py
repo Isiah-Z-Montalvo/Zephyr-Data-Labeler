@@ -17,8 +17,18 @@ resizingState = False
 def run():
 	master = Tk()
 	master.title("Zephyr Data Labeler")
-	master.config(bg="#26242f")
+	#master.config(bg="#26242f")
 	master.geometry("1000x1000")
+	style = Style(master)
+	
+	style.theme_create("Darketh", 
+					   settings = {
+						   "TLabelFrame": {
+							   "configure": {
+								   "bordercolor": "green"
+							   }
+						   }
+					   })
 	
 	galleryContainer = Frame(master)
 	galleryCanvas = Canvas(galleryContainer)
@@ -72,7 +82,7 @@ def run():
 		galleryCanvas.configure(yscrollcommand = galleryScrollbar.set)
 		galleryContainer.grid(row = 0, column = 0, padx = 20, pady = 20)
 		galleryCanvas.grid(row = 0, column = 0, padx = 20, pady = 20)
-		galleryScrollbar.grid(row = 0, column = 1, padx = 20, pady = 20)
+		galleryScrollbar.grid(row = 0, column = 1, padx = 0, pady = 0, sticky = "ns")
 		renderGallery()
 		return
 	
@@ -91,6 +101,7 @@ def run():
 	
 	def switchDark():
 		master.config(bg="#26242f")
+		style.theme_use("Darketh")
 		return
 	
 	menuBar = Menu(master)
