@@ -121,6 +121,7 @@ def run():
 	logo.thumbnail((200, 200))
 	logo = ImageTk.PhotoImage(logo)
 	logoLabel = Label(master, image = logo)
+	classLabel = Label(master, text = "Classes", font = ("Facon", 28))
 	classButton = Button(master, text = "Add New Class", command = createClass)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
@@ -141,7 +142,8 @@ def run():
 	galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 	
 	logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5)
-	classButton.grid(row = 1, column = 0, ipadx = 60, ipady = 60, pady = 5)
+	classLabel.grid(row = 1, column = 0, pady = 5)
+	classButton.grid(row = 2, column = 0, ipadx = 60, ipady = 20, pady = 5)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# mainloop, runs infinitely
