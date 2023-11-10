@@ -39,6 +39,8 @@ def run():
 	
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def createDataset():
+		fileTypes = [("Zephyr Dataset File", "*.zds")]
+		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
 		return
 	
 	def createClass():
@@ -119,7 +121,6 @@ def run():
 	logo.thumbnail((200, 200))
 	logo = ImageTk.PhotoImage(logo)
 	logoLabel = Label(master, image = logo)
-	datasetButton = Button(master, text = "Create Dataset", command = createDataset)
 	classButton = Button(master, text = "Add New Class", command = createClass)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
@@ -130,6 +131,7 @@ def run():
 	menuBar.add_cascade(label ='File', menu = fileMenu)
 	menuBar.add_cascade(label = 'Themes', menu = themeMenu)
 	fileMenu.add_command(label ='Open Folder', command = selectFolder)
+	fileMenu.add_command(label = "Create New Dataset", command = createDataset)
 	themeMenu.add_command(label = "Light", command = switchLight)
 	themeMenu.add_command(label = "Dark", command = switchDark)
 	
@@ -138,9 +140,8 @@ def run():
 	master.bind("<Configure>", resizeGallery)
 	galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 	
-	logoLabel.grid(row = 0, column = 0)
-	datasetButton.grid(row = 1, column = 0, ipadx = 10, ipady = 10, padx = 10, pady = 10)
-	classButton.grid(row = 2, column = 0, ipadx = 10, ipady = 10, padx = 10, pady = 10)
+	logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5)
+	classButton.grid(row = 1, column = 0, ipadx = 60, ipady = 60, pady = 5)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# mainloop, runs infinitely
