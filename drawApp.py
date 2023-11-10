@@ -21,11 +21,11 @@ def run():
 	master.geometry("1000x1000")
 	style = Style(master)
 	
-	style.theme_create("Darketh", 
+	style.theme_create("DarkenTheSkies", 
 					   settings = {
-						   "TLabelFrame": {
+						   "Vertical.TScrollbar": {
 							   "configure": {
-								   "bordercolor": "green"
+								   "background": "#26242f"
 							   }
 						   }
 					   })
@@ -101,7 +101,7 @@ def run():
 	
 	def switchDark():
 		master.config(bg="#26242f")
-		style.theme_use("Darketh")
+		style.theme_use("DarkenTheSkies")
 		return
 	
 	menuBar = Menu(master)
