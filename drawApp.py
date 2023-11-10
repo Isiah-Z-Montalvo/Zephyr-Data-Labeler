@@ -141,9 +141,12 @@ def run():
 	master.bind("<Configure>", resizeGallery)
 	galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 	
-	logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5)
-	classLabel.grid(row = 1, column = 0, pady = 5)
-	classButton.grid(row = 2, column = 0, ipadx = 60, ipady = 20, pady = 5)
+	logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
+	classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
+	classButton.grid(row = 2, column = 0, ipadx = 50, ipady = 20, padx = 10, pady = 5, sticky = "w")
+	
+	#row, column = master.grid_size()
+	#master.columnconfigure(column, weight = 1)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# mainloop, runs infinitely
