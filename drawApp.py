@@ -44,6 +44,15 @@ def run():
 		return
 	
 	def createClass():
+		classWindow = Toplevel(master)
+		classWindow.title("Class Name")
+		classWindow.geometry("300x100")
+		classNameLabel = Label(classWindow, text = "Enter a Class Name:", font = ("Facon", 16))
+		classEntry = Entry(classWindow, width = 20, font = ("Facon", 12))
+		classNameLabel.grid(row = 0, column = 0, padx = 15, pady = 5)
+		classEntry.grid(row = 1, column = 0, pady = 5)
+		classWindow.grab_set()
+		classWindow.resizable(False, False)
 		return
 	
 	def selectFolder():
@@ -69,7 +78,6 @@ def run():
 			picCopy = pic.copy()
 			picCopy.thumbnail((200, 200))
 			picPI = ImageTk.PhotoImage(picCopy)
-			
 			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
 		galleryPreview()
