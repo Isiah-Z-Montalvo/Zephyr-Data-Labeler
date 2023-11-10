@@ -5,6 +5,7 @@ import math
 from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
+from tkinter.filedialog import asksaveasfile
 from PIL import *
 from PIL import Image, ImageTk
 import os
@@ -29,11 +30,19 @@ def run():
 							   }
 						   }
 					   })
-	
+	# Gallery Preview Widgets - - - - - - - - - - - - - - - - - - - - - -
 	galleryContainer = Frame(master)
 	galleryCanvas = Canvas(galleryContainer)
 	galleryScrollbar = Scrollbar(galleryContainer, orient = "vertical", command = galleryCanvas.yview)
 	galleryFrame = LabelFrame(galleryCanvas, text = "Gallery Preview")
+	# Gallery Preview Widgets - - - - - - - - - - - - - - - - - - - - - -
+	
+	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	def createDataset():
+		return
+	
+	def createClass():
+		return
 	
 	def selectFolder():
 		global path
@@ -103,7 +112,18 @@ def run():
 		master.config(bg="#26242f")
 		style.theme_use("DarkenTheSkies")
 		return
+	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
+	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
+	logo = Image.open("Images/Logo.png")
+	logo.thumbnail((200, 200))
+	logo = ImageTk.PhotoImage(logo)
+	logoLabel = Label(master, image = logo)
+	datasetButton = Button(master, text = "Create Dataset", command = createDataset)
+	classButton = Button(master, text = "Add New Class", command = createClass)
+	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	menuBar = Menu(master)
 	fileMenu = Menu(menuBar, tearoff = 0)
 	themeMenu = Menu(menuBar, tearoff = 0)
@@ -117,6 +137,11 @@ def run():
 	
 	master.bind("<Configure>", resizeGallery)
 	galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
+	
+	logoLabel.grid(row = 0, column = 0)
+	datasetButton.grid(row = 1, column = 0, ipadx = 10, ipady = 10, padx = 10, pady = 10)
+	classButton.grid(row = 2, column = 0, ipadx = 10, ipady = 10, padx = 10, pady = 10)
+	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# mainloop, runs infinitely
 	mainloop()
