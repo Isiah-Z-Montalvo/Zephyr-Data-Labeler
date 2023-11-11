@@ -21,6 +21,7 @@ def run():
 	master.title("Zephyr Data Labeler")
 	#master.config(bg="#26242f")
 	master.geometry("1000x1000")
+	master.state("zoomed")
 	style = Style(master)
 	
 	style.theme_create("DarkenTheSkies", 
@@ -107,14 +108,18 @@ def run():
 		return
 	
 	def galleryPreview():
+		logoLabel.grid_remove()
+		classLabel.grid_remove()
+		classButton.grid_remove()
+		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
 		assignGalleryLabels(galleryFrame)
 		
 		galleryCanvas.create_window((0, 0), window = galleryFrame, anchor="nw")
 		galleryCanvas.configure(yscrollcommand = galleryScrollbar.set)
-		galleryContainer.grid(row = 0, column = 0, padx = 20, pady = 20)
-		galleryCanvas.grid(row = 0, column = 0, padx = 20, pady = 20)
-		galleryScrollbar.grid(row = 0, column = 1, padx = 0, pady = 0, sticky = "ns")
+		galleryContainer.grid(row = 0, column = 0, padx = 15, pady = 5)
+		galleryCanvas.grid(row = 0, column = 0, padx = 15, pady = 5)
+		galleryScrollbar.grid(row = 0, column = 1, sticky = "ns")
 		
 		renderGallery(galleryFrame, galleryCanvas)
 		master.bind("<Configure>", lambda event: resizeGallery(event, galleryFrame, galleryCanvas))
