@@ -14,6 +14,7 @@ from os import listdir
 path = ""
 images = []
 resizingState = False
+initialState = True
 
 def run():
 	master = Tk()
@@ -30,12 +31,6 @@ def run():
 							   }
 						   }
 					   })
-	# Gallery Preview Widgets - - - - - - - - - - - - - - - - - - - - - -
-	galleryContainer = Frame(master)
-	galleryCanvas = Canvas(galleryContainer)
-	galleryScrollbar = Scrollbar(galleryContainer, orient = "vertical", command = galleryCanvas.yview)
-	galleryFrame = LabelFrame(galleryCanvas, text = "Gallery Preview")
-	# Gallery Preview Widgets - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def createDataset():
@@ -43,7 +38,7 @@ def run():
 		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
 		return
 	
-	def createClass():
+	def createClassWidgets():
 		classWindow = Toplevel(master)
 		classWindow.title("Class Name")
 		classWindow.geometry("300x100")
@@ -78,10 +73,17 @@ def run():
 				(image.endswith(".png"))):
 				fullPath = os.path.join(path, image)
 				images.append(fullPath)
-		assignGalleryLabels()
+		galleryPreview()
 		return
 	
-	def assignGalleryLabels():
+	def createGalleryWidgets():
+		galleryContainer = Frame(master)
+		galleryCanvas = Canvas(galleryContainer)
+		galleryScrollbar = Scrollbar(galleryContainer, orient = "vertical", command = galleryCanvas.yview)
+		galleryFrame = LabelFrame(galleryCanvas, text = "Gallery Preview")
+		return galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame
+	
+	def assignGalleryLabels(galleryFrame):
 		for img in images:
 			pic = Image.open(img)
 			picCopy = pic.copy()
@@ -89,10 +91,9 @@ def run():
 			picPI = ImageTk.PhotoImage(picCopy)
 			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
-		galleryPreview()
 		return
 	
-	def renderGallery():
+	def renderGallery(galleryFrame, galleryCanvas):
 		r = 0
 		c = 0
 		for label in galleryFrame.winfo_children():
@@ -106,20 +107,26 @@ def run():
 		return
 	
 	def galleryPreview():
+		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
+		assignGalleryLabels(galleryFrame)
+		
 		galleryCanvas.create_window((0, 0), window = galleryFrame, anchor="nw")
 		galleryCanvas.configure(yscrollcommand = galleryScrollbar.set)
 		galleryContainer.grid(row = 0, column = 0, padx = 20, pady = 20)
 		galleryCanvas.grid(row = 0, column = 0, padx = 20, pady = 20)
 		galleryScrollbar.grid(row = 0, column = 1, padx = 0, pady = 0, sticky = "ns")
-		renderGallery()
+		
+		renderGallery(galleryFrame, galleryCanvas)
+		master.bind("<Configure>", lambda event: resizeGallery(event, galleryFrame, galleryCanvas))
+		galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 		return
 	
-	def resizeGallery(event):
+	def resizeGallery(event, galleryFrame, galleryCanvas):
 		global resizingState
 		
 		if not resizingState:
 			resizingState = True
-			renderGallery()
+			renderGallery(galleryFrame, galleryCanvas)
 			resizingState = False
 		return
 	
@@ -139,7 +146,7 @@ def run():
 	logo = ImageTk.PhotoImage(logo)
 	logoLabel = Label(master, image = logo)
 	classLabel = Label(master, text = "Classes", font = ("Facon", 28))
-	classButton = Button(master, text = "Add New Class", command = createClass)
+	classButton = Button(master, text = "Add New Class", command = createClassWidgets)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,13 +162,11 @@ def run():
 	
 	master.config(menu = menuBar)
 	
-	master.bind("<Configure>", resizeGallery)
-	galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
-	
-	logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
-	classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
-	classButton.grid(row = 2, column = 0, ipadx = 50, ipady = 20, padx = 10, pady = 5, sticky = "w")
-	
+	if initialState == True:
+		logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
+		classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
+		classButton.grid(row = 2, column = 0, ipadx = 50, ipady = 20, padx = 10, pady = 5, sticky = "w")
+		initialState = False
 	#row, column = master.grid_size()
 	#master.columnconfigure(column, weight = 1)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
