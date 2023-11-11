@@ -162,6 +162,7 @@ def run():
 	
 	master.config(menu = menuBar)
 	
+	global initialState
 	if initialState == True:
 		logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
