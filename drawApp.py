@@ -54,6 +54,7 @@ def run():
 		return
 	
 	def completeClassEntry(event, classWindow, classNameLabel, classEntry):
+		global classRow
 		className = classEntry.get()
 		classEntry.destroy()
 		classNameLabel.destroy()
@@ -97,10 +98,10 @@ def run():
 	def renderGallery(galleryFrame, galleryCanvas):
 		r = 0
 		c = 0
+		master.update()
 		for label in galleryFrame.winfo_children():
 			label.grid(row = r, column = c, padx = 5, pady = 5)
 			c += 1
-			master.update()
 			if c == math.floor(master.winfo_width() / label.winfo_width()):
 				c = 0
 				r += 1
@@ -113,7 +114,7 @@ def run():
 		classButton.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
-		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame))
+		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame, endGalleryButton))
 		assignGalleryLabels(galleryFrame)
 		
 		galleryCanvas.create_window((0, 0), window = galleryFrame, anchor="nw")
@@ -128,11 +129,12 @@ def run():
 		galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 		return
 	
-	def endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame):
+	def endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame, endGalleryButton):
 		galleryContainer.destroy()
 		galleryCanvas.destroy()
 		galleryScrollbar.destroy()
 		galleryFrame.destroy()
+		endGalleryButton.destroy()
 		
 		logoLabel.grid()
 		classLabel.grid()
