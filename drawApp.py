@@ -113,6 +113,7 @@ def run():
 		classButton.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
+		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame))
 		assignGalleryLabels(galleryFrame)
 		
 		galleryCanvas.create_window((0, 0), window = galleryFrame, anchor="nw")
@@ -120,10 +121,22 @@ def run():
 		galleryContainer.grid(row = 0, column = 0, padx = 15, pady = 5)
 		galleryCanvas.grid(row = 0, column = 0, padx = 15, pady = 5)
 		galleryScrollbar.grid(row = 0, column = 1, sticky = "ns")
+		endGalleryButton.grid(row = 1, column = 0, ipadx = 50, ipady = 10, pady = 10)
 		
 		renderGallery(galleryFrame, galleryCanvas)
 		master.bind("<Configure>", lambda event: resizeGallery(event, galleryFrame, galleryCanvas))
 		galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
+		return
+	
+	def endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame):
+		galleryContainer.destroy()
+		galleryCanvas.destroy()
+		galleryScrollbar.destroy()
+		galleryFrame.destroy()
+		
+		logoLabel.grid()
+		classLabel.grid()
+		classButton.grid()
 		return
 	
 	def resizeGallery(event, galleryFrame, galleryCanvas):
