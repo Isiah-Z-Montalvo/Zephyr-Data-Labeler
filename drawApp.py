@@ -49,10 +49,19 @@ def run():
 		classWindow.geometry("300x100")
 		classNameLabel = Label(classWindow, text = "Enter a Class Name:", font = ("Facon", 16))
 		classEntry = Entry(classWindow, width = 20, font = ("Facon", 12))
+		
 		classNameLabel.grid(row = 0, column = 0, padx = 15, pady = 5)
 		classEntry.grid(row = 1, column = 0, pady = 5)
 		classWindow.grab_set()
 		classWindow.resizable(False, False)
+		classWindow.bind("<Return>", lambda event: completeClassEntry(event, classWindow, classNameLabel, classEntry))
+		return
+	
+	def completeClassEntry(event, classWindow, classNameLabel, classEntry):
+		className = classEntry.get()
+		classEntry.destroy()
+		classNameLabel.destroy()
+		classWindow.destroy()
 		return
 	
 	def selectFolder():
