@@ -54,11 +54,16 @@ def run():
 		return
 	
 	def completeClassEntry(event, classWindow, classNameLabel, classEntry):
-		global classRow
 		className = classEntry.get()
 		classEntry.destroy()
 		classNameLabel.destroy()
 		classWindow.destroy()
+		newClass = Button(classFrame, image = pixelSize, text = className, command = createClassWidgets, compound = "c")
+		
+		rowNum = 0
+		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
+			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
+			rowNum += 1
 		return
 	
 	def selectFolder():
@@ -112,6 +117,7 @@ def run():
 		logoLabel.grid_remove()
 		classLabel.grid_remove()
 		classButton.grid_remove()
+		classFrame.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
 		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame, endGalleryButton))
@@ -138,6 +144,7 @@ def run():
 		
 		logoLabel.grid()
 		classLabel.grid()
+		classFrame.grid()
 		classButton.grid()
 		return
 	
@@ -166,7 +173,9 @@ def run():
 	logo = ImageTk.PhotoImage(logo)
 	logoLabel = Label(master, image = logo)
 	classLabel = Label(master, text = "Classes", font = ("Facon", 28))
-	classButton = Button(master, text = "Add New Class", command = createClassWidgets)
+	classFrame = Frame(master)
+	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
+	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,7 +195,8 @@ def run():
 	if initialState == True:
 		logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
-		classButton.grid(row = 2, column = 0, ipadx = 50, ipady = 20, padx = 10, pady = 5, sticky = "w")
+		classFrame.grid(row = 2, column =0, sticky = "w")
+		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		initialState = False
 	#row, column = master.grid_size()
 	#master.columnconfigure(column, weight = 1)
