@@ -61,7 +61,7 @@ def run():
 		if color[0] == None:
 			return
 		r, g, b = color[0]
-		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b)))
+		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
 		newClass = Button(classFrame, image = classColor, text = className, command = createClassWidgets, compound = "c")
 		newClass.image = classColor
 		rowNum = 0
