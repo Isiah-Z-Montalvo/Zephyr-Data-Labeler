@@ -56,8 +56,9 @@ def run():
 	def completeClassEntry(event, classWindow, classEntry):
 		className = classEntry.get()
 		classWindow.destroy()
-		newClass = Button(classFrame, image = pixelSize, text = className, command = createClassWidgets, compound = "c")
-		
+		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (255, 0, 0)))
+		newClass = Button(classFrame, image = classColor, text = className, command = createClassWidgets, compound = "c")
+		newClass.image = classColor
 		rowNum = 0
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
