@@ -112,8 +112,6 @@ def run():
 		return
 	
 	def galleryPreview():
-		logoLabel.grid_remove()
-		classLabel.grid_remove()
 		classContainer.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
@@ -134,9 +132,6 @@ def run():
 	
 	def endGallery(galleryContainer):
 		galleryContainer.destroy()
-		
-		logoLabel.grid()
-		classLabel.grid()
 		classContainer.grid()
 		return
 	
@@ -164,9 +159,9 @@ def run():
 	logo = Image.open("Images/Logo.png")
 	logo.thumbnail((210, 210))
 	logo = ImageTk.PhotoImage(logo)
-	logoLabel = Label(master, image = logo)
-	classLabel = Label(master, text = "Classes", font = ("Facon", 31))
 	classContainer = Frame(master)
+	logoLabel = Label(classContainer, image = logo)
+	classLabel = Label(classContainer, text = "Classes", font = ("Facon", 31))
 	classCanvas = Canvas(classContainer, highlightthickness = 0)
 	classScrollbar = Scrollbar(classContainer, orient = "vertical", command = classCanvas.yview)
 	classFrame = Frame(classCanvas)
@@ -191,11 +186,11 @@ def run():
 	
 	global initialState
 	if initialState == True:
+		classContainer.grid(row = 0, column = 0, sticky = "w")
 		logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
-		classContainer.grid(row = 2, column = 0, sticky = "w")
-		classCanvas.grid(row = 0, column = 0, sticky = "w")
-		classScrollbar.grid(row = 0, column = 1, sticky = "ns")
+		classCanvas.grid(row = 2, column = 0, sticky = "w")
+		classScrollbar.grid(row = 2, column = 1, sticky = "ns")
 		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		master.update()
 		classCanvas.configure(width = classFrame.winfo_width(), height = master.winfo_height() - 300)
