@@ -6,6 +6,7 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
 from tkinter.filedialog import asksaveasfile
+from tkinter import colorchooser
 from PIL import *
 from PIL import Image, ImageTk
 import os
@@ -56,7 +57,11 @@ def run():
 	def completeClassEntry(event, classWindow, classEntry):
 		className = classEntry.get()
 		classWindow.destroy()
-		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (255, 0, 0)))
+		color = colorchooser.askcolor(title = "Choose Color for %s Class" % (className))
+		if color[0] == None:
+			return
+		r, g, b = color[0]
+		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b)))
 		newClass = Button(classFrame, image = classColor, text = className, command = createClassWidgets, compound = "c")
 		newClass.image = classColor
 		rowNum = 0
