@@ -50,27 +50,17 @@ def run():
 		classEntry.grid(row = 1, column = 0, pady = 5)
 		classWindow.grab_set()
 		classWindow.resizable(False, False)
-		classWindow.bind("<Return>", lambda event: completeClassEntry(event, classWindow, classNameLabel, classEntry))
+		classWindow.bind("<Return>", lambda event: completeClassEntry(event, classWindow, classEntry))
 		return
 	
-	def completeClassEntry(event, classWindow, classNameLabel, classEntry):
+	def completeClassEntry(event, classWindow, classEntry):
 		className = classEntry.get()
-		classEntry.destroy()
-		classNameLabel.destroy()
 		classWindow.destroy()
 		newClass = Button(classFrame, image = pixelSize, text = className, command = createClassWidgets, compound = "c")
 		
 		rowNum = 0
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
-			rowNum += 1
-		return
-	
-	def testScrolling():
-		rowNum = 0
-		for i in range(0, 11):
-			newClass = Button(classFrame, image = pixelSize, text = "gabagee", command = createClassWidgets, compound = "c")
-			newClass.grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
 			rowNum += 1
 		return
 	
@@ -124,11 +114,10 @@ def run():
 	def galleryPreview():
 		logoLabel.grid_remove()
 		classLabel.grid_remove()
-		classButton.grid_remove()
-		classFrame.grid_remove()
+		classContainer.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
-		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame, endGalleryButton))
+		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer))
 		assignGalleryLabels(galleryFrame)
 		
 		galleryCanvas.create_window((0, 0), window = galleryFrame, anchor="nw")
@@ -143,17 +132,12 @@ def run():
 		galleryFrame.bind("<Configure>", lambda e: galleryCanvas.configure(scrollregion = galleryCanvas.bbox("all")))
 		return
 	
-	def endGallery(galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame, endGalleryButton):
+	def endGallery(galleryContainer):
 		galleryContainer.destroy()
-		galleryCanvas.destroy()
-		galleryScrollbar.destroy()
-		galleryFrame.destroy()
-		endGalleryButton.destroy()
 		
 		logoLabel.grid()
 		classLabel.grid()
-		classFrame.grid()
-		classButton.grid()
+		classContainer.grid()
 		return
 	
 	def resizeGallery(event, galleryFrame, galleryCanvas):
@@ -161,7 +145,8 @@ def run():
 		
 		if not resizingState:
 			resizingState = True
-			renderGallery(galleryFrame, galleryCanvas)
+			if galleryFrame.winfo_exists() and galleryCanvas.winfo_exists(): 
+				renderGallery(galleryFrame, galleryCanvas)
 			resizingState = False
 		return
 	
@@ -181,9 +166,14 @@ def run():
 	logo = ImageTk.PhotoImage(logo)
 	logoLabel = Label(master, image = logo)
 	classLabel = Label(master, text = "Classes", font = ("Facon", 31))
-	classFrame = Frame(master)
+	classContainer = Frame(master)
+	classCanvas = Canvas(classContainer, highlightthickness = 0)
+	classScrollbar = Scrollbar(classContainer, orient = "vertical", command = classCanvas.yview)
+	classFrame = Frame(classCanvas)
+	classCanvas.create_window((0, 0), window = classFrame, anchor="nw")
+	classCanvas.configure(yscrollcommand = classScrollbar.set)
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
-	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = testScrolling, compound = "c")
+	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,9 +193,15 @@ def run():
 	if initialState == True:
 		logoLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		classLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = "w")
-		classFrame.grid(row = 2, column = 0, sticky = "w")
+		classContainer.grid(row = 2, column = 0, sticky = "w")
+		classCanvas.grid(row = 0, column = 0, sticky = "w")
+		classScrollbar.grid(row = 0, column = 1, sticky = "ns")
 		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
+		master.update()
+		classCanvas.configure(width = classFrame.winfo_width(), height = master.winfo_height() - 300)
 		initialState = False
+	
+	classFrame.bind("<Configure>", lambda e: classCanvas.configure(scrollregion = classCanvas.bbox("all")))
 	#row, column = master.grid_size()
 	#master.columnconfigure(column, weight = 1)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
