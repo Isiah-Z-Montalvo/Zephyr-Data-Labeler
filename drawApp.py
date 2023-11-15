@@ -11,6 +11,9 @@ from PIL import *
 from PIL import Image, ImageTk
 import os
 from os import listdir
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import pandas as pd
 
 images = []
 classFrequencies = {}
@@ -69,11 +72,13 @@ def run():
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
 			rowNum += 1
+		drawPlot()
 		return
 	
 	def updateClass(newClass, className):
 		classFrequencies[newClass] += 1
 		newClass["text"] = className + ": %d" % (classFrequencies[newClass])
+		drawPlot()
 		return
 	
 	def selectFolder():
@@ -190,6 +195,17 @@ def run():
 	def trashState():
 		imageCanvas.config(cursor = "pirate")
 		return
+	
+	def drawPlot():
+		figure = plt.Figure(figsize=(2, 2), dpi=100)
+		axis = figure.add_subplot(111)
+		classFrequency = FigureCanvasTkAgg(figure, toolbarContainer)
+		col = ["Frequency"]
+		data = pd.DataFrame.from_dict(classFrequencies, orient = "index", columns = col)
+		data.plot(kind = 'barh', legend = True, ax = axis)
+		axis.set_title('Label Frequency by Class')
+		classFrequency.get_tk_widget().grid(row = 1, column = 0, sticky = "nw")
+		return
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,7 +225,8 @@ def run():
 	
 	imageCanvas = Canvas(master, bg = "black", highlightthickness = 0)
 	
-	toolbarFrame = LabelFrame(master, text = "Toolbar")
+	toolbarContainer = Frame(master)
+	toolbarFrame = LabelFrame(toolbarContainer, text = "Toolbar")
 	drag = ImageTk.PhotoImage(Image.open("Images/DragIcon.png").resize((92, 92)))
 	box = ImageTk.PhotoImage(Image.open("Images/BoundingBoxIcon.png").resize((92, 92)))
 	zoom = ImageTk.PhotoImage(Image.open("Images/ZoomIcon.png").resize((92, 92)))
@@ -247,7 +264,8 @@ def run():
 		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		
 		imageCanvas.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = "nw")
-		toolbarFrame.grid(row = 0, column = 2, sticky = "nw")
+		toolbarContainer.grid(row = 0, column = 2, sticky = "nw")
+		toolbarFrame.grid(row = 0, column = 0, sticky = "nw")
 		dragTool.grid(row = 0, column = 0, pady = 5)
 		boundingTool.grid(row = 1, column = 0, pady = 5)
 		zoomTool.grid(row = 2, column = 0, pady = 5)
