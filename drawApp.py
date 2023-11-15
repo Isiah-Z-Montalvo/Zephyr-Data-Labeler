@@ -13,6 +13,7 @@ import os
 from os import listdir
 
 images = []
+classFrequencies = {}
 resizingState = False
 initialState = True
 
@@ -61,12 +62,18 @@ def run():
 			return
 		r, g, b = color[0]
 		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
-		newClass = Button(classFrame, image = classColor, text = className, command = createClassWidgets, compound = "c")
+		newClass = Button(classFrame, image = classColor, text = className + ": %d" % (0), command = lambda: updateClass(newClass, className), compound = "c")
 		newClass.image = classColor
+		classFrequencies[newClass] = 0
 		rowNum = 0
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
 			rowNum += 1
+		return
+	
+	def updateClass(newClass, className):
+		classFrequencies[newClass] += 1
+		newClass["text"] = className + ": %d" % (classFrequencies[newClass])
 		return
 	
 	def selectFolder():
