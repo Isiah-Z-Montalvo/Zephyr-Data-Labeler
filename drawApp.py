@@ -175,6 +175,11 @@ def run():
 	classCanvas.configure(yscrollcommand = classScrollbar.set)
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
 	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
+	
+	imageCanvas = Canvas(master, highlightthickness = 0)
+	
+	toolbarFrame = LabelFrame(master, text = "Toolbar")
+	boundingButton = Button(toolbarFrame, text = "Bounding Box", command = None)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,8 +203,16 @@ def run():
 		classCanvas.grid(row = 2, column = 0, sticky = "w")
 		classScrollbar.grid(row = 2, column = 1, sticky = "ns")
 		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
+		
+		imageCanvas.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = "nw")
+		toolbarFrame.grid(row = 0, column = 2, sticky = "ne")
+		boundingButton.grid(row = 0, column = 0)
+		
 		master.update()
+		classContainer.update()
 		classCanvas.configure(width = classFrame.winfo_width(), height = master.winfo_height() - 300)
+		classContainer.update()
+		imageCanvas.configure(width = master.winfo_width() - (classContainer.winfo_width() * 2), height = classContainer.winfo_height())
 		initialState = False
 	
 	classFrame.bind("<Configure>", lambda e: classCanvas.configure(scrollregion = classCanvas.bbox("all")))
