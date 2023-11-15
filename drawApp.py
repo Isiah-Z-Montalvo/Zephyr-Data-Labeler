@@ -65,9 +65,9 @@ def run():
 			return
 		r, g, b = color[0]
 		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
-		newClass = Button(classFrame, image = classColor, text = className + ": %d" % (0), command = lambda: updateClass(newClass, className), compound = "c")
+		newClass = Button(classFrame, image = classColor, text = className, command = lambda: updateClass(newClass, className), compound = "c")
 		newClass.image = classColor
-		classFrequencies[newClass] = 0
+		classFrequencies[newClass] = [0, color[1]]
 		rowNum = 0
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
@@ -76,8 +76,7 @@ def run():
 		return
 	
 	def updateClass(newClass, className):
-		classFrequencies[newClass] += 1
-		newClass["text"] = className + ": %d" % (classFrequencies[newClass])
+		classFrequencies[newClass][0] += 1
 		drawPlot()
 		return
 	
@@ -197,14 +196,15 @@ def run():
 		return
 	
 	def drawPlot():
-		figure = plt.Figure(figsize=(2, 2), dpi=100)
+		figure = plt.Figure(figsize = (4.38, 7), dpi = 50)
 		axis = figure.add_subplot(111)
 		classFrequency = FigureCanvasTkAgg(figure, toolbarContainer)
-		col = ["Frequency"]
-		data = pd.DataFrame.from_dict(classFrequencies, orient = "index", columns = col)
-		data.plot(kind = 'barh', legend = True, ax = axis)
-		axis.set_title('Label Frequency by Class')
-		classFrequency.get_tk_widget().grid(row = 1, column = 0, sticky = "nw")
+		cols = ["Frequency", "Color"]
+		data = pd.DataFrame.from_dict(classFrequencies, orient = "index", columns = cols)
+		axis.set_xticks([])
+		axis.yaxis.set_tick_params(labelleft = False)
+		data["Frequency"].plot(kind = 'barh', legend = False, ax = axis, color = data["Color"]).bar_label(axis.containers[0], label_type = "center")
+		classFrequency.get_tk_widget().grid(row = 1, column = 0, pady = 5, sticky = "nw")
 		return
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
