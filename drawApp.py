@@ -179,12 +179,18 @@ def run():
 	imageCanvas = Canvas(master, bg = "black", highlightthickness = 0)
 	
 	toolbarFrame = LabelFrame(master, text = "Toolbar")
-	drag = ImageTk.PhotoImage(Image.open("Images/DragIcon.png").resize((100, 100)))
-	box = ImageTk.PhotoImage(Image.open("Images/BoundingBoxIcon.png").resize((100, 100)))
-	zoom = ImageTk.PhotoImage(Image.open("Images/ZoomIcon.png").resize((100, 100)))
+	drag = ImageTk.PhotoImage(Image.open("Images/DragIcon.png").resize((92, 92)))
+	box = ImageTk.PhotoImage(Image.open("Images/BoundingBoxIcon.png").resize((92, 92)))
+	zoom = ImageTk.PhotoImage(Image.open("Images/ZoomIcon.png").resize((92, 92)))
+	resize = ImageTk.PhotoImage(Image.open("Images/ResizeIcon.png").resize((92, 92)))
+	rotate = ImageTk.PhotoImage(Image.open("Images/RotateIcon.png").resize((92, 92)))
+	trash = ImageTk.PhotoImage(Image.open("Images/TrashIcon.png").resize((92, 92)))
 	dragTool = Button(toolbarFrame, image = drag, command = None)
 	boundingTool = Button(toolbarFrame, image = box, command = None)
 	zoomTool = Button(toolbarFrame, image = zoom, command = None)
+	resizeTool = Button(toolbarFrame, image = resize, command = None)
+	rotateTool = Button(toolbarFrame, image = rotate, command = None)
+	trashTool = Button(toolbarFrame, image = trash, command = None)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -211,9 +217,12 @@ def run():
 		
 		imageCanvas.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = "nw")
 		toolbarFrame.grid(row = 0, column = 2, sticky = "nw")
-		dragTool.grid(row = 0, column = 0)
-		boundingTool.grid(row = 1, column = 0)
-		zoomTool.grid(row = 2, column = 0)
+		dragTool.grid(row = 0, column = 0, pady = 5)
+		boundingTool.grid(row = 1, column = 0, pady = 5)
+		zoomTool.grid(row = 2, column = 0, pady = 5)
+		resizeTool.grid(row = 0, column = 1, padx = 5, pady = 5)
+		rotateTool.grid(row = 1, column = 1, padx = 5, pady = 5)
+		trashTool.grid(row = 2, column = 1, padx = 5, pady = 5)
 		
 		master.update()
 		classContainer.update()
