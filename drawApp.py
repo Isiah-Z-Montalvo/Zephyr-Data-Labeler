@@ -176,10 +176,15 @@ def run():
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
 	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	
-	imageCanvas = Canvas(master, highlightthickness = 0)
+	imageCanvas = Canvas(master, bg = "black", highlightthickness = 0)
 	
 	toolbarFrame = LabelFrame(master, text = "Toolbar")
-	boundingButton = Button(toolbarFrame, text = "Bounding Box", command = None)
+	drag = ImageTk.PhotoImage(Image.open("Images/DragIcon.png").resize((100, 100)))
+	box = ImageTk.PhotoImage(Image.open("Images/BoundingBoxIcon.png").resize((100, 100)))
+	zoom = ImageTk.PhotoImage(Image.open("Images/ZoomIcon.png").resize((100, 100)))
+	dragTool = Button(toolbarFrame, image = drag, command = None)
+	boundingTool = Button(toolbarFrame, image = box, command = None)
+	zoomTool = Button(toolbarFrame, image = zoom, command = None)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,8 +210,10 @@ def run():
 		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		
 		imageCanvas.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = "nw")
-		toolbarFrame.grid(row = 0, column = 2, sticky = "ne")
-		boundingButton.grid(row = 0, column = 0)
+		toolbarFrame.grid(row = 0, column = 2, sticky = "nw")
+		dragTool.grid(row = 0, column = 0)
+		boundingTool.grid(row = 1, column = 0)
+		zoomTool.grid(row = 2, column = 0)
 		
 		master.update()
 		classContainer.update()
