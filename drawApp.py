@@ -12,7 +12,6 @@ from PIL import Image, ImageTk
 import os
 from os import listdir
 
-path = ""
 images = []
 resizingState = False
 initialState = True
@@ -71,13 +70,14 @@ def run():
 		return
 	
 	def selectFolder():
-		global path
+		path = ""
 		path = askdirectory(title="Select Folder")
-		storeImages()
+		storeImages(path)
 		return
 	
-	def storeImages():
+	def storeImages(path):
 		global images
+		images = []
 		for image in os.listdir(path):
 			if ((image.endswith(".jpg")) or 
 				(image.endswith(".jpeg")) or 
