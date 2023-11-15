@@ -159,6 +159,30 @@ def run():
 		master.config(bg="#26242f")
 		style.theme_use("DarkenTheSkies")
 		return
+	
+	def dragState():
+		imageCanvas.config(cursor = "fleur")
+		return
+	
+	def resizeState():
+		imageCanvas.config(cursor = "sizing")
+		return
+	
+	def zoomState():
+		imageCanvas.config(cursor = "plus")
+		return
+	
+	def boundingState():
+		imageCanvas.config(cursor = "arrow")
+		return
+	
+	def rotateState():
+		imageCanvas.config(cursor = "exchange")
+		return
+	
+	def trashState():
+		imageCanvas.config(cursor = "pirate")
+		return
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,12 +209,12 @@ def run():
 	resize = ImageTk.PhotoImage(Image.open("Images/ResizeIcon.png").resize((92, 92)))
 	rotate = ImageTk.PhotoImage(Image.open("Images/RotateIcon.png").resize((92, 92)))
 	trash = ImageTk.PhotoImage(Image.open("Images/TrashIcon.png").resize((92, 92)))
-	dragTool = Button(toolbarFrame, image = drag, command = None)
-	boundingTool = Button(toolbarFrame, image = box, command = None)
-	zoomTool = Button(toolbarFrame, image = zoom, command = None)
-	resizeTool = Button(toolbarFrame, image = resize, command = None)
-	rotateTool = Button(toolbarFrame, image = rotate, command = None)
-	trashTool = Button(toolbarFrame, image = trash, command = None)
+	dragTool = Button(toolbarFrame, image = drag, command = dragState)
+	boundingTool = Button(toolbarFrame, image = box, command = boundingState)
+	zoomTool = Button(toolbarFrame, image = zoom, command = zoomState)
+	resizeTool = Button(toolbarFrame, image = resize, command = resizeState)
+	rotateTool = Button(toolbarFrame, image = rotate, command = rotateState)
+	trashTool = Button(toolbarFrame, image = trash, command = trashState)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
