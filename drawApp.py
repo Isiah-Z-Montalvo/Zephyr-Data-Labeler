@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 
-images = []
+path = ""
 classFrequencies = {}
 resizingState = False
 initialState = True
@@ -81,22 +81,11 @@ def run():
 		return
 	
 	def selectFolder():
+		global path
 		path = ""
 		path = askdirectory(title="Select Folder")
 		if path == "":
 			return
-		storeImages(path)
-		return
-	
-	def storeImages(path):
-		global images
-		images = []
-		for image in os.listdir(path):
-			if ((image.endswith(".jpg")) or 
-				(image.endswith(".jpeg")) or 
-				(image.endswith(".png"))):
-				fullPath = os.path.join(path, image)
-				images.append(fullPath)
 		galleryPreview()
 		return
 	
@@ -108,11 +97,16 @@ def run():
 		return galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame
 	
 	def assignGalleryLabels(galleryFrame):
-		for img in images:
-			pic = Image.open(img)
-			picCopy = pic.copy()
-			picCopy.thumbnail((200, 200))
-			picPI = ImageTk.PhotoImage(picCopy)
+		for image in os.listdir(path):
+			if ((image.endswith(".jpg")) or 
+				(image.endswith(".jpeg")) or 
+				(image.endswith(".png"))):
+				fullPath = os.path.join(path, image)
+			else:
+				continue
+			pic = Image.open(fullPath)
+			pic.thumbnail((200, 200))
+			picPI = ImageTk.PhotoImage(pic)
 			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
 		return
@@ -132,6 +126,8 @@ def run():
 	
 	def galleryPreview():
 		classContainer.grid_remove()
+		imageCanvas.grid_remove()
+		toolbarContainer.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
 		endGalleryButton = Button(galleryContainer, text = "Confirm", command = lambda: endGallery(galleryContainer))
@@ -152,6 +148,8 @@ def run():
 	def endGallery(galleryContainer):
 		galleryContainer.destroy()
 		classContainer.grid()
+		imageCanvas.grid()
+		toolbarContainer.grid()
 		return
 	
 	def resizeGallery(event, galleryFrame, galleryCanvas):
