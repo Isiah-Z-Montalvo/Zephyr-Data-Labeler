@@ -126,7 +126,7 @@ def run():
 	
 	def galleryPreview():
 		classContainer.grid_remove()
-		imageCanvas.grid_remove()
+		masterCanvas.grid_remove()
 		toolbarContainer.grid_remove()
 		
 		galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame = createGalleryWidgets()
@@ -148,7 +148,7 @@ def run():
 	def endGallery(galleryContainer):
 		galleryContainer.destroy()
 		classContainer.grid()
-		imageCanvas.grid()
+		masterCanvas.grid()
 		toolbarContainer.grid()
 		return
 	
@@ -172,27 +172,27 @@ def run():
 		return
 	
 	def dragState():
-		imageCanvas.config(cursor = "fleur")
+		masterCanvas.config(cursor = "fleur")
 		return
 	
 	def resizeState():
-		imageCanvas.config(cursor = "sizing")
+		masterCanvas.config(cursor = "sizing")
 		return
 	
 	def zoomState():
-		imageCanvas.config(cursor = "plus")
+		masterCanvas.config(cursor = "plus")
 		return
 	
 	def boundingState():
-		imageCanvas.config(cursor = "arrow")
+		masterCanvas.config(cursor = "arrow")
 		return
 	
 	def rotateState():
-		imageCanvas.config(cursor = "exchange")
+		masterCanvas.config(cursor = "exchange")
 		return
 	
 	def trashState():
-		imageCanvas.config(cursor = "pirate")
+		masterCanvas.config(cursor = "pirate")
 		return
 	
 	def drawPlot():
@@ -223,7 +223,7 @@ def run():
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
 	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	
-	imageCanvas = Canvas(master, bg = "black", highlightthickness = 0)
+	masterCanvas = Canvas(master, bg = "black", highlightthickness = 0)
 	
 	toolbarContainer = Frame(master)
 	toolbarFrame = LabelFrame(toolbarContainer, text = "Toolbar")
@@ -263,7 +263,7 @@ def run():
 		classScrollbar.grid(row = 2, column = 1, sticky = "ns")
 		classButton.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = "w")
 		
-		imageCanvas.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = "nw")
+		masterCanvas.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = "nw")
 		toolbarContainer.grid(row = 0, column = 2, sticky = "nw")
 		toolbarFrame.grid(row = 0, column = 0, sticky = "nw")
 		dragTool.grid(row = 0, column = 0, pady = 5)
@@ -277,7 +277,7 @@ def run():
 		classContainer.update()
 		classCanvas.configure(width = classFrame.winfo_width(), height = master.winfo_height() - 300)
 		classContainer.update()
-		imageCanvas.configure(width = master.winfo_width() - (classContainer.winfo_width() * 2), height = classContainer.winfo_height())
+		masterCanvas.configure(width = master.winfo_width() - (classContainer.winfo_width() * 2), height = classContainer.winfo_height())
 		initialState = False
 	
 	classFrame.bind("<Configure>", lambda e: classCanvas.configure(scrollregion = classCanvas.bbox("all")))
