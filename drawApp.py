@@ -83,6 +83,8 @@ def run():
 	def selectFolder():
 		path = ""
 		path = askdirectory(title="Select Folder")
+		if path == "":
+			return
 		storeImages(path)
 		return
 	
