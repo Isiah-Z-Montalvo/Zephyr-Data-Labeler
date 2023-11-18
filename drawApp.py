@@ -118,10 +118,10 @@ def run():
 		for label in galleryFrame.winfo_children():
 			label.grid(row = r, column = c, padx = 5, pady = 5)
 			c += 1
-			if c == math.floor(master.winfo_width() / label.winfo_width()):
+			if c == math.floor(galleryCanvas.winfo_width() / label.winfo_width()):
 				c = 0
 				r += 1
-		galleryCanvas.configure(width = galleryFrame.winfo_width(), height = master.winfo_height() - 100)
+		galleryCanvas.configure(width = master.winfo_width() - 100, height = master.winfo_height() - 100)
 		return
 	
 	def galleryPreview():
