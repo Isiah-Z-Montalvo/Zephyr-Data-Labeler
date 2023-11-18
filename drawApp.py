@@ -19,6 +19,7 @@ path = ""
 classFrequencies = {}
 resizingState = False
 initialState = True
+index = 0
 
 def run():
 	master = Tk()
@@ -86,6 +87,8 @@ def run():
 		path = askdirectory(title="Select Folder")
 		if path == "":
 			return
+		global index
+		index = 0
 		galleryPreview()
 		return
 	
@@ -150,6 +153,8 @@ def run():
 		classContainer.grid()
 		masterCanvas.grid()
 		toolbarContainer.grid()
+		
+		displayImage()
 		return
 	
 	def resizeGallery(event, galleryFrame, galleryCanvas):
@@ -206,6 +211,25 @@ def run():
 		data["Frequency"].plot(kind = 'barh', legend = False, ax = axis, color = data["Color"]).bar_label(axis.containers[0], label_type = "center")
 		classFrequency.get_tk_widget().grid(row = 1, column = 0, pady = 5, sticky = "nw")
 		return
+	
+	def displayImage():
+		global index
+		global path
+		if index == len(os.listdir(path)) - 1:
+			return
+		isImage = False
+		while isImage == False:
+			if ((os.listdir(path)[index].endswith(".jpg")) or 
+				(os.listdir(path)[index].endswith(".jpeg")) or 
+				(os.listdir(path)[index].endswith(".png"))):
+				fullPath = os.path.join(path, os.listdir(path)[index])
+				img = ImageTk.PhotoImage(Image.open(fullPath))
+				masterCanvas.create_image(0, 0, anchor = NW, image = img)
+				masterCanvas.image = img
+				isImage = True
+			else: 
+				index += 1
+		return
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,7 +247,7 @@ def run():
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
 	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	
-	masterCanvas = Canvas(master, bg = "black", highlightthickness = 0)
+	masterCanvas = Canvas(master, highlightthickness = 0)
 	
 	toolbarContainer = Frame(master)
 	toolbarFrame = LabelFrame(toolbarContainer, text = "Toolbar")
