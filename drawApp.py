@@ -228,6 +228,7 @@ def run():
 				imageCanvas.image = img
 				imageCanvas.configure(width = img.width(), height = img.height())
 				masterCanvas.create_window((masterCanvas.winfo_width()/2, masterCanvas.winfo_height()/2), window = imageCanvas, anchor = "center")
+				masterCanvas.update()
 				isImage = True
 			else: 
 				index += 1
