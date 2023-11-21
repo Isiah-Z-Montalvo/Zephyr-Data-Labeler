@@ -224,8 +224,10 @@ def run():
 				(os.listdir(path)[index].endswith(".png"))):
 				fullPath = os.path.join(path, os.listdir(path)[index])
 				img = ImageTk.PhotoImage(Image.open(fullPath))
-				masterCanvas.create_image(0, 0, anchor = NW, image = img)
-				masterCanvas.image = img
+				imageCanvas.create_image(0, 0, anchor = NW, image = img)
+				imageCanvas.image = img
+				imageCanvas.configure(width = img.width(), height = img.height())
+				masterCanvas.create_window((masterCanvas.winfo_width()/2, masterCanvas.winfo_height()/2), window = imageCanvas, anchor = "center")
 				isImage = True
 			else: 
 				index += 1
@@ -242,12 +244,13 @@ def run():
 	classCanvas = Canvas(classContainer, highlightthickness = 0)
 	classScrollbar = Scrollbar(classContainer, orient = "vertical", command = classCanvas.yview)
 	classFrame = Frame(classCanvas)
-	classCanvas.create_window((0, 0), window = classFrame, anchor="nw")
+	classCanvas.create_window((0, 0), window = classFrame, anchor= "nw")
 	classCanvas.configure(yscrollcommand = classScrollbar.set)
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
 	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	
-	masterCanvas = Canvas(master, highlightthickness = 0)
+	masterCanvas = Canvas(master, highlightthickness = 0, bg = "black")
+	imageCanvas = Canvas(masterCanvas, highlightthickness = 0)
 	
 	toolbarContainer = Frame(master)
 	toolbarFrame = LabelFrame(toolbarContainer, text = "Toolbar")
