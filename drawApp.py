@@ -223,12 +223,17 @@ def run():
 				(os.listdir(path)[index].endswith(".jpeg")) or 
 				(os.listdir(path)[index].endswith(".png"))):
 				fullPath = os.path.join(path, os.listdir(path)[index])
-				img = ImageTk.PhotoImage(Image.open(fullPath))
+				img = Image.open(fullPath)
+				img.thumbnail((700, 700))
+				img = ImageTk.PhotoImage(img)
 				imageCanvas.create_image(0, 0, anchor = NW, image = img)
 				imageCanvas.image = img
 				imageCanvas.configure(width = img.width(), height = img.height())
 				masterCanvas.create_window((masterCanvas.winfo_width()/2, masterCanvas.winfo_height()/2), window = imageCanvas, anchor = "center")
 				masterCanvas.update()
+				
+				backButton.grid(row = 2, column = 0, pady = 5, sticky = "nw")
+				forwButton.grid(row = 2, column = 0, pady = 5, sticky = "ne")
 				isImage = True
 			else: 
 				index += 1
@@ -261,12 +266,16 @@ def run():
 	resize = ImageTk.PhotoImage(Image.open("Images/ResizeIcon.png").resize((92, 92)))
 	rotate = ImageTk.PhotoImage(Image.open("Images/RotateIcon.png").resize((92, 92)))
 	trash = ImageTk.PhotoImage(Image.open("Images/TrashIcon.png").resize((92, 92)))
+	backArr = ImageTk.PhotoImage(Image.open("Images/BackArrow.png").resize((70, 70)))
+	forwArr = ImageTk.PhotoImage(Image.open("Images/ForwardArrow.png").resize((70, 70)))
 	dragTool = Button(toolbarFrame, image = drag, command = dragState)
 	boundingTool = Button(toolbarFrame, image = box, command = boundingState)
 	zoomTool = Button(toolbarFrame, image = zoom, command = zoomState)
 	resizeTool = Button(toolbarFrame, image = resize, command = resizeState)
 	rotateTool = Button(toolbarFrame, image = rotate, command = rotateState)
 	trashTool = Button(toolbarFrame, image = trash, command = trashState)
+	backButton = Button(toolbarContainer, image = backArr, command = None)
+	forwButton = Button(toolbarContainer, image = forwArr, command = None)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
