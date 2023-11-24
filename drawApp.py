@@ -192,6 +192,19 @@ def run():
 	
 	def boundingState():
 		imageCanvas.config(cursor = "arrow")
+		imageCanvas.bind("<ButtonPress-1>", lambda event: createBoundingBox(event))
+		#imageCanvas.bind("<ButtonRelease-1>", )
+		return
+	
+	def createBoundingBox(event):
+		initialX = event.x
+		initialY = event.y
+		bbox = imageCanvas.create_rectangle(0, 0, 0, 0, outline = "black", width = 3)
+		imageCanvas.bind("<B1-Motion>", lambda event: drawBoundingBox(event, bbox, initialX, initialY))
+		return
+	
+	def drawBoundingBox(event, bbox, initialX, initialY):
+		imageCanvas.coords(bbox, initialX, initialY, event.x, event.y)
 		return
 	
 	def rotateState():
