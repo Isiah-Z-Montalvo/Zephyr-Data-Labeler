@@ -154,6 +154,8 @@ def run():
 		masterCanvas.grid()
 		toolbarContainer.grid()
 		
+		backButton.grid(row = 2, column = 0, pady = 5, sticky = "nw")
+		forwButton.grid(row = 2, column = 0, pady = 5, sticky = "ne")
 		displayImage()
 		return
 	
@@ -177,27 +179,27 @@ def run():
 		return
 	
 	def dragState():
-		masterCanvas.config(cursor = "fleur")
+		imageCanvas.config(cursor = "fleur")
 		return
 	
 	def resizeState():
-		masterCanvas.config(cursor = "sizing")
+		imageCanvas.config(cursor = "sizing")
 		return
 	
 	def zoomState():
-		masterCanvas.config(cursor = "plus")
+		imageCanvas.config(cursor = "plus")
 		return
 	
 	def boundingState():
-		masterCanvas.config(cursor = "arrow")
+		imageCanvas.config(cursor = "arrow")
 		return
 	
 	def rotateState():
-		masterCanvas.config(cursor = "exchange")
+		imageCanvas.config(cursor = "exchange")
 		return
 	
 	def trashState():
-		masterCanvas.config(cursor = "pirate")
+		imageCanvas.config(cursor = "pirate")
 		return
 	
 	def drawPlot():
@@ -231,9 +233,6 @@ def run():
 				imageCanvas.configure(width = img.width(), height = img.height())
 				masterCanvas.create_window((masterCanvas.winfo_width()/2, masterCanvas.winfo_height()/2), window = imageCanvas, anchor = "center")
 				masterCanvas.update()
-				
-				backButton.grid(row = 2, column = 0, pady = 5, sticky = "nw")
-				forwButton.grid(row = 2, column = 0, pady = 5, sticky = "ne")
 				isImage = True
 			else: 
 				index += 1
