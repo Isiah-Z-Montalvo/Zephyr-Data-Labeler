@@ -181,7 +181,17 @@ def run():
 		style.theme_use("DarkenTheSkies")
 		return
 	
+	def mainUnbindings():
+		imageCanvas.unbind("<ButtonPress-1>")
+		imageCanvas.unbind("<B1-Motion>")
+		imageCanvas.unbind("<ButtonRelease-1>")
+		for bbox in imageCanvas.find_all()[1:]:
+			imageCanvas.tag_unbind(bbox, "<Enter>")
+			imageCanvas.tag_unbind(bbox, "<Leave>")
+		return
+	
 	def dragState():
+		mainUnbindings()
 		for bbox in imageCanvas.find_all()[1:]:
 			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, bbox))
 			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event))
@@ -189,7 +199,8 @@ def run():
 	
 	def enterBbox(event, bbox):
 		event.widget.config(cursor = "fleur")
-		imageCanvas.move(bbox, 100, 100)
+		widget = event.widget.find_withtag("current")[0]
+		imageCanvas.move(widget, 100, 100)
 		return
 	
 	def leaveBbox(event):
@@ -205,6 +216,7 @@ def run():
 		return
 	
 	def boundingState():
+		mainUnbindings()
 		imageCanvas.config(cursor = "arrow")
 		imageCanvas.bind("<ButtonPress-1>", lambda event: createBoundingBox(event))
 		return
