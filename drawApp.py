@@ -182,7 +182,18 @@ def run():
 		return
 	
 	def dragState():
-		imageCanvas.config(cursor = "fleur")
+		for bbox in imageCanvas.find_all()[1:]:
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, bbox))
+			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event))
+		return
+	
+	def enterBbox(event, bbox):
+		event.widget.config(cursor = "fleur")
+		imageCanvas.move(bbox, 100, 100)
+		return
+	
+	def leaveBbox(event):
+		event.widget.config(cursor = "arrow")
 		return
 	
 	def resizeState():
