@@ -208,6 +208,12 @@ def run():
 	
 	def drawBoundingBox(event, bbox, initialX, initialY):
 		imageCanvas.coords(bbox, initialX, initialY, event.x, event.y)
+		imageCanvas.bind('<ButtonRelease-1>', lambda event: endBoundingBox(event))
+		return
+	
+	def endBoundingBox(event):
+		classFrequencies[selectedClass][0] += 1
+		drawPlot()
 		return
 	
 	def rotateState():
