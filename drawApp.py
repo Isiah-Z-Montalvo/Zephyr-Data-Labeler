@@ -20,6 +20,7 @@ classFrequencies = {}
 resizingState = False
 initialState = True
 index = 0
+selectedClass = None
 
 def run():
 	master = Tk()
@@ -66,9 +67,11 @@ def run():
 			return
 		r, g, b = color[0]
 		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
-		newClass = Button(classFrame, image = classColor, text = className, command = lambda: updateClass(newClass, className), compound = "c")
+		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(newClass), compound = "c")
 		newClass.image = classColor
 		classFrequencies[newClass] = [0, color[1]]
+		global selectedClass
+		selectedClass = newClass
 		rowNum = 0
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
@@ -76,9 +79,9 @@ def run():
 		drawPlot()
 		return
 	
-	def updateClass(newClass, className):
-		classFrequencies[newClass][0] += 1
-		drawPlot()
+	def selectClass(newClass):
+		global selectedClass
+		selectedClass = newClass
 		return
 	
 	def selectFolder():
@@ -196,10 +199,11 @@ def run():
 		return
 	
 	def createBoundingBox(event):
-		initialX = event.x
-		initialY = event.y
-		bbox = imageCanvas.create_rectangle(initialX, initialY, initialX, initialY, outline = "black", width = 2)
-		imageCanvas.bind("<B1-Motion>", lambda event: drawBoundingBox(event, bbox, initialX, initialY))
+		if classFrequencies:
+			initialX = event.x
+			initialY = event.y
+			bbox = imageCanvas.create_rectangle(initialX, initialY, initialX, initialY, outline = classFrequencies[selectedClass][1], width = 2)
+			imageCanvas.bind("<B1-Motion>", lambda event: drawBoundingBox(event, bbox, initialX, initialY))
 		return
 	
 	def drawBoundingBox(event, bbox, initialX, initialY):
