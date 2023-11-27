@@ -187,20 +187,33 @@ def run():
 		imageCanvas.unbind("<ButtonRelease-1>")
 		for bbox in imageCanvas.find_all()[1:]:
 			imageCanvas.tag_unbind(bbox, "<Enter>")
+			imageCanvas.tag_unbind(bbox, "<B1-Motion>")
 			imageCanvas.tag_unbind(bbox, "<Leave>")
 		return
 	
 	def dragState():
 		mainUnbindings()
 		for bbox in imageCanvas.find_all()[1:]:
-			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, bbox))
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event))
+			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: bboxCoords(event))
 			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event))
 		return
 	
-	def enterBbox(event, bbox):
+	def enterBbox(event):
 		event.widget.config(cursor = "fleur")
+		return
+	
+	def bboxCoords(event):
 		widget = event.widget.find_withtag("current")[0]
-		imageCanvas.move(widget, 100, 100)
+		x, y, width, height = imageCanvas.coords(widget)
+		width = width - x
+		height = height - y
+		imageCanvas.tag_bind(widget, "<B1-Motion>", lambda event: moveBbox(event, x, y, width, height))
+		return
+	
+	def moveBbox(event, x, y, width, height):
+		widget = event.widget.find_withtag("current")[0]
+		imageCanvas.coords(widget, event.x, event.y, width + event.x, height + event.y)
 		return
 	
 	def leaveBbox(event):
