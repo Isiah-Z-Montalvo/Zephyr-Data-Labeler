@@ -187,6 +187,7 @@ def run():
 		imageCanvas.unbind("<ButtonRelease-1>")
 		for bbox in imageCanvas.find_all()[1:]:
 			imageCanvas.tag_unbind(bbox, "<Enter>")
+			imageCanvas.tag_unbind(bbox, "<ButtonPress-1>")
 			imageCanvas.tag_unbind(bbox, "<B1-Motion>")
 			imageCanvas.tag_unbind(bbox, "<Leave>")
 		return
