@@ -68,11 +68,11 @@ def run():
 			return
 		r, g, b = color[0]
 		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
-		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(newClass), compound = "c")
+		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(className), compound = "c")
 		newClass.image = classColor
-		classFrequencies[newClass] = [0, color[1]]
+		classFrequencies[className] = [0, color[1], newClass]
 		global selectedClass
-		selectedClass = newClass
+		selectedClass = className
 		rowNum = 0
 		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
 			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
@@ -80,9 +80,9 @@ def run():
 		drawPlot()
 		return
 	
-	def selectClass(newClass):
+	def selectClass(className):
 		global selectedClass
-		selectedClass = newClass
+		selectedClass = className
 		return
 	
 	def selectFolder():
@@ -242,7 +242,7 @@ def run():
 		if classFrequencies:
 			initialX = event.x
 			initialY = event.y
-			bbox = imageCanvas.create_rectangle(initialX, initialY, initialX, initialY, outline = classFrequencies[selectedClass][1], width = 2)
+			bbox = imageCanvas.create_rectangle(initialX, initialY, initialX, initialY, outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
 			imageCanvas.bind("<B1-Motion>", lambda event: drawBoundingBox(event, bbox, initialX, initialY))
 		return
 	
@@ -270,7 +270,10 @@ def run():
 		return
 	
 	def deleteBbox(event, state):
-		imageCanvas.delete(event.widget.find_withtag("current")[0])
+		widget = event.widget.find_withtag("current")[0]
+		classFrequencies[imageCanvas.itemcget(widget, "tags").split()[0]][0] -= 1
+		imageCanvas.delete(widget)
+		drawPlot()
 		imageCanvas.config(cursor = buttonCursors[state])
 		return
 	
@@ -278,7 +281,7 @@ def run():
 		figure = plt.Figure(figsize = (4.38, 7), dpi = 50)
 		axis = figure.add_subplot(111)
 		classFrequency = FigureCanvasTkAgg(figure, toolbarContainer)
-		cols = ["Frequency", "Color"]
+		cols = ["Frequency", "Color", "Button"]
 		data = pd.DataFrame.from_dict(classFrequencies, orient = "index", columns = cols)
 		axis.set_xticks([])
 		axis.yaxis.set_tick_params(labelleft = False)
