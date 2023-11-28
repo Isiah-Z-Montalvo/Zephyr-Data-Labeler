@@ -226,11 +226,11 @@ def run():
 		mainUnbindings()
 		for bbox in imageCanvas.find_all()[1:]:
 			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Resize"))
-			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: getCoords(event))
+			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: getResizeCoords(event))
 			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
 		return
 	
-	def getCoords(event):
+	def getResizeCoords(event):
 		widget = event.widget.find_withtag("current")[0]
 		initialX, initialY = imageCanvas.coords(widget)[:2]
 		imageCanvas.tag_bind(widget, "<B1-Motion>", lambda event: resizeBbox(event, initialX, initialY))
