@@ -335,6 +335,20 @@ def run():
 			else: 
 				index += 1
 		return
+	
+	def goBack():
+		masterCanvas.delete("all")
+		global index
+		index -= 1
+		displayImage()
+		return
+	
+	def goForward():
+		masterCanvas.delete("all")
+		global index
+		index += 1
+		displayImage()
+		return
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -371,8 +385,8 @@ def run():
 	resizeTool = Button(toolbarFrame, image = resize, command = resizeState)
 	rotateTool = Button(toolbarFrame, image = rotate, command = rotateState)
 	trashTool = Button(toolbarFrame, image = trash, command = trashState)
-	backButton = Button(toolbarContainer, image = backArr, command = None)
-	forwButton = Button(toolbarContainer, image = forwArr, command = None)
+	backButton = Button(toolbarContainer, image = backArr, command = goBack)
+	forwButton = Button(toolbarContainer, image = forwArr, command = goForward)
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
