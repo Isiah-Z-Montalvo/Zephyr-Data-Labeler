@@ -17,6 +17,7 @@ import pandas as pd
 
 path = ""
 classFrequencies = {}
+buttonCursors = {"Standard" : "arrow", "Drag" : "fleur", "Resize" : "sizing", "Zoom" : "plus", "Rotate" : "exchange", "Delete" : "pirate"}
 resizingState = False
 initialState = True
 index = 0
@@ -195,13 +196,13 @@ def run():
 	def dragState():
 		mainUnbindings()
 		for bbox in imageCanvas.find_all()[1:]:
-			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event))
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Drag"))
 			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: bboxCoords(event))
-			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event))
+			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
 		return
 	
-	def enterBbox(event):
-		event.widget.config(cursor = "fleur")
+	def enterBbox(event, state):
+		event.widget.config(cursor = buttonCursors[state])
 		return
 	
 	def bboxCoords(event):
@@ -217,15 +218,17 @@ def run():
 		imageCanvas.coords(widget, event.x, event.y, width + event.x, height + event.y)
 		return
 	
-	def leaveBbox(event):
-		event.widget.config(cursor = "arrow")
+	def leaveBbox(event, state):
+		event.widget.config(cursor = buttonCursors[state])
 		return
 	
 	def resizeState():
+		mainUnbindings()
 		imageCanvas.config(cursor = "sizing")
 		return
 	
 	def zoomState():
+		mainUnbindings()
 		imageCanvas.config(cursor = "plus")
 		return
 	
@@ -254,11 +257,21 @@ def run():
 		return
 	
 	def rotateState():
+		mainUnbindings()
 		imageCanvas.config(cursor = "exchange")
 		return
 	
 	def trashState():
-		imageCanvas.config(cursor = "pirate")
+		mainUnbindings()
+		for bbox in imageCanvas.find_all()[1:]:
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Delete"))
+			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: deleteBbox(event, "Standard"))
+			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
+		return
+	
+	def deleteBbox(event, state):
+		imageCanvas.delete(event.widget.find_withtag("current")[0])
+		imageCanvas.config(cursor = buttonCursors[state])
 		return
 	
 	def drawPlot():
