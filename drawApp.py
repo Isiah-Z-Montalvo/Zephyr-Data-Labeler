@@ -337,15 +337,19 @@ def run():
 		return
 	
 	def goBack():
-		masterCanvas.delete("all")
 		global index
+		if index == 0:
+			return
+		masterCanvas.delete("all")
 		index -= 1
 		displayImage()
 		return
 	
 	def goForward():
-		masterCanvas.delete("all")
 		global index
+		if index == len(os.listdir(path)) - 1:
+			return
+		masterCanvas.delete("all")
 		index += 1
 		displayImage()
 		return
