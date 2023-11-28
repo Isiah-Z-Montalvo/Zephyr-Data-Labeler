@@ -224,12 +224,18 @@ def run():
 	
 	def resizeState():
 		mainUnbindings()
-		imageCanvas.config(cursor = "sizing")
+		for bbox in imageCanvas.find_all()[1:]:
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Resize"))
+			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: rotateImage(event))
+			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
 		return
 	
 	def zoomState():
 		mainUnbindings()
-		imageCanvas.config(cursor = "plus")
+		for bbox in imageCanvas.find_all()[1:]:
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Zoom"))
+			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: rotateImage(event))
+			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
 		return
 	
 	def boundingState():
@@ -258,7 +264,13 @@ def run():
 	
 	def rotateState():
 		mainUnbindings()
-		imageCanvas.config(cursor = "exchange")
+		for bbox in imageCanvas.find_all()[1:]:
+			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Rotate"))
+			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: rotateImage(event))
+			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
+		return
+	
+	def rotateImage(event):
 		return
 	
 	def trashState():
