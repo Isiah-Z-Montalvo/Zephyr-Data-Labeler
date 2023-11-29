@@ -22,7 +22,8 @@ resizingState = False
 initialState = True
 index = 0
 selectedClass = None
-
+currentImage = None
+currentRotation = 0
 def run():
 	master = Tk()
 	master.title("Zephyr Data Labeler")
@@ -275,13 +276,26 @@ def run():
 	
 	def rotateState():
 		mainUnbindings()
-		for bbox in imageCanvas.find_all()[1:]:
-			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Rotate"))
-			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: rotateImage(event))
-			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
+		imageCanvas.config(cursor =  buttonCursors["Rotate"])
+		imageCanvas.bind("<ButtonPress-1>", lambda event: rotateImage(event))
 		return
 	
 	def rotateImage(event):
+		imageCanvas.delete("all")
+		masterCanvas.delete("all")
+		global currentImage
+		global currentRotation
+		currentRotation += 90
+		if currentRotation > 360:
+			currentRotation = 90
+		img = currentImage.rotate(currentRotation)
+		img.thumbnail((700, 700))
+		img = ImageTk.PhotoImage(img)
+		imageCanvas.create_image(0, 0, anchor = NW, image = img)
+		imageCanvas.image = img
+		imageCanvas.configure(width = img.width(), height = img.height())
+		masterCanvas.create_window((masterCanvas.winfo_width()/2, masterCanvas.winfo_height()/2), window = imageCanvas, anchor = "center")
+		masterCanvas.update()
 		return
 	
 	def trashState():
@@ -315,13 +329,14 @@ def run():
 	def displayImage():
 		global index
 		global path
+		global currentImage
 		isImage = False
 		while isImage == False:
 			if ((os.listdir(path)[index].endswith(".jpg")) or 
 				(os.listdir(path)[index].endswith(".jpeg")) or 
 				(os.listdir(path)[index].endswith(".png"))):
 				fullPath = os.path.join(path, os.listdir(path)[index])
-				img = Image.open(fullPath)
+				currentImage = img = Image.open(fullPath)
 				img.thumbnail((700, 700))
 				img = ImageTk.PhotoImage(img)
 				imageCanvas.create_image(0, 0, anchor = NW, image = img)
