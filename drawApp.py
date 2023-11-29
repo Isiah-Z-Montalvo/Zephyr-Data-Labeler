@@ -315,8 +315,6 @@ def run():
 	def displayImage():
 		global index
 		global path
-		if index == len(os.listdir(path)) - 1:
-			return
 		isImage = False
 		while isImage == False:
 			if ((os.listdir(path)[index].endswith(".jpg")) or 
