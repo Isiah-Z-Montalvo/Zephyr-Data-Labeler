@@ -184,6 +184,7 @@ def run():
 		return
 	
 	def mainUnbindings():
+		imageCanvas.config(cursor = buttonCursors["Standard"])
 		imageCanvas.unbind("<ButtonPress-1>")
 		imageCanvas.unbind("<B1-Motion>")
 		imageCanvas.unbind("<ButtonRelease-1>")
