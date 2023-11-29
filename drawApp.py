@@ -245,10 +245,12 @@ def run():
 	
 	def zoomState():
 		mainUnbindings()
-		for bbox in imageCanvas.find_all()[1:]:
-			imageCanvas.tag_bind(bbox, "<Enter>", lambda event: enterBbox(event, "Zoom"))
-			imageCanvas.tag_bind(bbox, "<ButtonPress-1>", lambda event: rotateImage(event))
-			imageCanvas.tag_bind(bbox, "<Leave>", lambda event: leaveBbox(event, "Standard"))
+		imageCanvas.config(cursor = buttonCursors["Zoom"])
+		imageCanvas.bind("<ButtonPress-1>", lambda event: zoomCanvas(event))
+		return
+	
+	def zoomCanvas(event):
+		imageCanvas.scale("all", event.x, event.y, 2, 2)
 		return
 	
 	def boundingState():
