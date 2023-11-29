@@ -340,6 +340,7 @@ def run():
 		global index
 		if index == 0:
 			return
+		imageCanvas.delete("all")
 		masterCanvas.delete("all")
 		index -= 1
 		displayImage()
@@ -349,6 +350,7 @@ def run():
 		global index
 		if index == len(os.listdir(path)) - 1:
 			return
+		imageCanvas.delete("all")
 		masterCanvas.delete("all")
 		index += 1
 		displayImage()
