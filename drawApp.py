@@ -22,7 +22,6 @@ resizingState = False
 initialState = True
 index = 0
 selectedClass = None
-currentImage = None
 currentRotation = 0
 def run():
 	master = Tk()
@@ -286,19 +285,11 @@ def run():
 	def rotateImage(event):
 		imageCanvas.delete("all")
 		masterCanvas.delete("all")
-		global currentImage
 		global currentRotation
 		currentRotation += 90
 		if currentRotation > 360:
 			currentRotation = 90
-		img = currentImage.rotate(currentRotation)
-		img.thumbnail((700, 700))
-		img = ImageTk.PhotoImage(img)
-		imageCanvas.create_image(0, 0, anchor = NW, image = img)
-		imageCanvas.image = img
-		imageCanvas.configure(width = img.width(), height = img.height())
-		masterCanvas.create_window((masterCanvas.winfo_width()/2, masterCanvas.winfo_height()/2), window = imageCanvas, anchor = "center")
-		masterCanvas.update()
+		displayImage(currentRotation)
 		return
 	
 	def trashState():
@@ -329,18 +320,18 @@ def run():
 		classFrequency.get_tk_widget().grid(row = 1, column = 0, pady = 5, sticky = "nw")
 		return
 	
-	def displayImage():
+	def displayImage(rotation = 0):
 		global index
 		global path
-		global currentImage
 		isImage = False
 		while isImage == False:
 			if ((os.listdir(path)[index].endswith(".jpg")) or 
 				(os.listdir(path)[index].endswith(".jpeg")) or 
 				(os.listdir(path)[index].endswith(".png"))):
 				fullPath = os.path.join(path, os.listdir(path)[index])
-				currentImage = img = Image.open(fullPath)
-				img.thumbnail((700, 700))
+				img = Image.open(fullPath)
+				img = img.resize((500, 500))
+				img = img.rotate(rotation)
 				img = ImageTk.PhotoImage(img)
 				imageCanvas.create_image(0, 0, anchor = NW, image = img)
 				imageCanvas.image = img
