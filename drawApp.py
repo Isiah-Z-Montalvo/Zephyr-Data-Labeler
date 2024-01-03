@@ -289,7 +289,7 @@ def run():
 		currentRotation += 90
 		if currentRotation > 360:
 			currentRotation = 90
-		displayImage(currentRotation)
+		displayImage(rotation = currentRotation)
 		return
 	
 	def trashState():
@@ -320,7 +320,7 @@ def run():
 		classFrequency.get_tk_widget().grid(row = 1, column = 0, pady = 5, sticky = "nw")
 		return
 	
-	def displayImage(rotation = 0):
+	def displayImage(width = 600, height = 600, rotation = 0):
 		global index
 		global path
 		isImage = False
@@ -330,7 +330,7 @@ def run():
 				(os.listdir(path)[index].endswith(".png"))):
 				fullPath = os.path.join(path, os.listdir(path)[index])
 				img = Image.open(fullPath)
-				img = img.resize((500, 500))
+				img = img.resize((width, height))
 				img = img.rotate(rotation)
 				img = ImageTk.PhotoImage(img)
 				imageCanvas.create_image(0, 0, anchor = NW, image = img)
