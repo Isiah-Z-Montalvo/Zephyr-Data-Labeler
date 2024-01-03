@@ -442,8 +442,9 @@ def run():
 		initialState = False
 	
 	classFrame.bind("<Configure>", lambda e: classCanvas.configure(scrollregion = classCanvas.bbox("all")))
-	#row, column = master.grid_size()
-	#master.columnconfigure(column, weight = 1)
+	row, column = master.grid_size()
+	master.rowconfigure(row, weight = 1)
+	master.columnconfigure(column, weight = 1)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# mainloop, runs infinitely
