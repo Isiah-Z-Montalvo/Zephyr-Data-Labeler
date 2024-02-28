@@ -17,12 +17,11 @@ import pandas as pd
 
 path = ""
 classFrequencies = {}
-buttonCursors = {"Standard" : "arrow", "Drag" : "fleur", "Resize" : "sizing", "Zoom" : "plus", "Rotate" : "exchange", "Delete" : "pirate"}
+buttonCursors = {"Standard" : "arrow", "Drag" : "fleur", "Resize" : "sizing", "Zoom" : "plus", "Delete" : "pirate"}
 resizingState = False
 initialState = True
 index = 0
 selectedClass = None
-currentRotation = 0
 def run():
 	master = Tk()
 	master.title("Zephyr Data Labeler")
@@ -249,6 +248,8 @@ def run():
 		return
 	
 	def zoomCanvas(event):
+		imageCanvas.delete("all")
+		masterCanvas.delete("all")
 		displayImage(width = imageCanvas.winfo_width() + 150, height = imageCanvas.winfo_height() + 150)
 		return
 	
@@ -276,20 +277,16 @@ def run():
 		drawPlot()
 		return
 	
-	def rotateState():
+	def zoomOutState():
 		mainUnbindings()
-		imageCanvas.config(cursor =  buttonCursors["Rotate"])
-		imageCanvas.bind("<ButtonPress-1>", lambda event: rotateImage(event))
+		imageCanvas.config(cursor =  buttonCursors["Zoom"])
+		imageCanvas.bind("<ButtonPress-1>", lambda event: zoomOutImage(event))
 		return
 	
-	def rotateImage(event):
+	def zoomOutImage(event):
 		imageCanvas.delete("all")
 		masterCanvas.delete("all")
-		global currentRotation
-		currentRotation += 90
-		if currentRotation > 360:
-			currentRotation = 90
-		displayImage(rotation = currentRotation)
+		displayImage(width = imageCanvas.winfo_width() - 150, height = imageCanvas.winfo_height() - 150)
 		return
 	
 	def trashState():
@@ -320,7 +317,7 @@ def run():
 		classFrequency.get_tk_widget().grid(row = 1, column = 0, pady = 5, sticky = "nw")
 		return
 	
-	def displayImage(width = 600, height = 600, rotation = 0):
+	def displayImage(width = 600, height = 600):
 		global index
 		global path
 		isImage = False
@@ -331,7 +328,6 @@ def run():
 				fullPath = os.path.join(path, os.listdir(path)[index])
 				img = Image.open(fullPath)
 				img = img.resize((width, height))
-				img = img.rotate(rotation)
 				img = ImageTk.PhotoImage(img)
 				imageCanvas.create_image(0, 0, anchor = NW, image = img)
 				imageCanvas.image = img
@@ -388,7 +384,7 @@ def run():
 	box = ImageTk.PhotoImage(Image.open("Images/BoundingBoxIcon.png").resize((92, 92)))
 	zoom = ImageTk.PhotoImage(Image.open("Images/ZoomIcon.png").resize((92, 92)))
 	resize = ImageTk.PhotoImage(Image.open("Images/ResizeIcon.png").resize((92, 92)))
-	rotate = ImageTk.PhotoImage(Image.open("Images/RotateIcon.png").resize((92, 92)))
+	zoomOut = ImageTk.PhotoImage(Image.open("Images/ZoomOutIcon.png").resize((92, 92)))
 	trash = ImageTk.PhotoImage(Image.open("Images/TrashIcon.png").resize((92, 92)))
 	backArr = ImageTk.PhotoImage(Image.open("Images/BackArrow.png").resize((70, 70)))
 	forwArr = ImageTk.PhotoImage(Image.open("Images/ForwardArrow.png").resize((70, 70)))
@@ -396,7 +392,7 @@ def run():
 	boundingTool = Button(toolbarFrame, image = box, command = boundingState)
 	zoomTool = Button(toolbarFrame, image = zoom, command = zoomState)
 	resizeTool = Button(toolbarFrame, image = resize, command = resizeState)
-	rotateTool = Button(toolbarFrame, image = rotate, command = rotateState)
+	zoomOutTool = Button(toolbarFrame, image = zoomOut, command = zoomOutState)
 	trashTool = Button(toolbarFrame, image = trash, command = trashState)
 	backButton = Button(toolbarContainer, image = backArr, command = goBack)
 	forwButton = Button(toolbarContainer, image = forwArr, command = goForward)
@@ -431,8 +427,8 @@ def run():
 		boundingTool.grid(row = 1, column = 0, pady = 5)
 		zoomTool.grid(row = 2, column = 0, pady = 5)
 		resizeTool.grid(row = 0, column = 1, padx = 5, pady = 5)
-		rotateTool.grid(row = 1, column = 1, padx = 5, pady = 5)
-		trashTool.grid(row = 2, column = 1, padx = 5, pady = 5)
+		zoomOutTool.grid(row = 2, column = 1, padx = 5, pady = 5)
+		trashTool.grid(row = 1, column = 1, padx = 5, pady = 5)
 		
 		master.update()
 		classContainer.update()
