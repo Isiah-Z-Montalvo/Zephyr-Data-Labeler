@@ -249,7 +249,7 @@ def run():
 		return
 	
 	def zoomCanvas(event):
-		imageCanvas.scale("all", event.x, event.y, 2, 2)
+		displayImage(width = imageCanvas.winfo_width() + 150, height = imageCanvas.winfo_height() + 150)
 		return
 	
 	def boundingState():
