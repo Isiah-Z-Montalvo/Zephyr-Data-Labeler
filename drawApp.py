@@ -254,10 +254,12 @@ def run():
 		
 		imageCanvas.delete("all")
 		masterCanvas.delete("all")
-		displayImage(width = imageCanvas.winfo_width() + 100, height = imageCanvas.winfo_height() + 100)
 		
+		scalingWeight = 100 / imageCanvas.winfo_width()
+		scalingWeight += 1
+		displayImage(width = imageCanvas.winfo_width() + 100, height = imageCanvas.winfo_height() + 100)
 		for bbox in bboxes:
-			imageCanvas.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
+			imageCanvas.create_rectangle(bbox[0] * scalingWeight, bbox[1] * scalingWeight, bbox[2] * scalingWeight, bbox[3] * scalingWeight, outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
 		return
 	
 	def boundingState():
@@ -297,10 +299,12 @@ def run():
 		
 		imageCanvas.delete("all")
 		masterCanvas.delete("all")
-		displayImage(width = imageCanvas.winfo_width() - 100, height = imageCanvas.winfo_height() - 100)
 		
+		scalingWeight = 100 / imageCanvas.winfo_width()
+		scalingWeight = 1 - scalingWeight
+		displayImage(width = imageCanvas.winfo_width() - 100, height = imageCanvas.winfo_height() - 100)
 		for bbox in bboxes:
-			imageCanvas.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
+			imageCanvas.create_rectangle(bbox[0] * scalingWeight, bbox[1] * scalingWeight, bbox[2] * scalingWeight, bbox[3] * scalingWeight, outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
 		return
 	
 	def trashState():
@@ -331,7 +335,7 @@ def run():
 		classFrequency.get_tk_widget().grid(row = 1, column = 0, pady = 5, sticky = "nw")
 		return
 	
-	def displayImage(width = 600, height = 600):
+	def displayImage(width = 500, height = 500):
 		global index
 		global path
 		isImage = False
