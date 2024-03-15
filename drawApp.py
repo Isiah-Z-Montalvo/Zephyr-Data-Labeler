@@ -248,9 +248,16 @@ def run():
 		return
 	
 	def zoomCanvas(event):
+		bboxes = []
+		for bbox in imageCanvas.find_all()[1:]:
+			bboxes.append(imageCanvas.coords(bbox))
+		
 		imageCanvas.delete("all")
 		masterCanvas.delete("all")
-		displayImage(width = imageCanvas.winfo_width() + 150, height = imageCanvas.winfo_height() + 150)
+		displayImage(width = imageCanvas.winfo_width() + 100, height = imageCanvas.winfo_height() + 100)
+		
+		for bbox in bboxes:
+			imageCanvas.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
 		return
 	
 	def boundingState():
@@ -284,9 +291,16 @@ def run():
 		return
 	
 	def zoomOutImage(event):
+		bboxes = []
+		for bbox in imageCanvas.find_all()[1:]:
+			bboxes.append(imageCanvas.coords(bbox))
+		
 		imageCanvas.delete("all")
 		masterCanvas.delete("all")
-		displayImage(width = imageCanvas.winfo_width() - 150, height = imageCanvas.winfo_height() - 150)
+		displayImage(width = imageCanvas.winfo_width() - 100, height = imageCanvas.winfo_height() - 100)
+		
+		for bbox in bboxes:
+			imageCanvas.create_rectangle(bbox[0], bbox[1], bbox[2], bbox[3], outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
 		return
 	
 	def trashState():
