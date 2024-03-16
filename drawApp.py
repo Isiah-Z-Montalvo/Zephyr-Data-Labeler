@@ -6,6 +6,7 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
 from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import askopenfilename
 from tkinter import colorchooser
 from PIL import *
 from PIL import Image, ImageTk
@@ -14,6 +15,7 @@ from os import listdir
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
+import json 
 
 path = ""
 classFrequencies = {}
@@ -22,6 +24,7 @@ resizingState = False
 initialState = True
 index = 0
 selectedClass = None
+openedProject = None
 def run():
 	master = Tk()
 	master.title("Zephyr Data Labeler")
@@ -41,8 +44,49 @@ def run():
 	
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def createDataset():
-		fileTypes = [("Zephyr Dataset File", "*.zds")]
+		fileTypes = [("Zephyr Dataset File", "*.json")]
 		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
+		fileName = file.name.split("/")[-1]
+		projectParameters = {
+			"projectName" : fileName,
+			"path" : "",
+			"classFrequencies" : {},
+			"index" : 0,
+			"selectedClass" : None
+		}
+		with open(fileName, "w") as outfile:
+			json.dump(projectParameters, outfile)
+		global openedProject
+		openedProject = fileName
+		return
+	
+	def openDataset():
+		fileTypes = [("Zephyr Dataset File", "*.json")]
+		file = askopenfilename(filetypes = fileTypes, defaultextension = fileTypes)
+		fileName = file.split("/")[-1]
+		with open(fileName, "r") as openfile:
+			projectParameters = json.load(openfile)
+			global openedProject, path, classFrequencies, index, selectedClass
+			openedProject, path, classFrequencies, index, selectedClass = projectParameters.values()
+		displayImage()
+		return
+	
+	def saveDataset():
+		fileTypes = [("Zephyr Dataset File", "*.json")]
+		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
+		fileName = file.name.split("/")[-1]
+		global openedProject, path, classFrequencies, index, selectedClass
+		if fileName == openedProject:
+			projectParameters = {
+				"projectName" : openedProject,
+				"path" : path,
+				"classFrequencies" : classFrequencies,
+				"index" : index,
+				"selectedClass" : selectedClass
+			}
+			serialize = json.dumps(projectParameters)
+			with open(fileName, "w") as outfile:
+				outfile.write(serialize)
 		return
 	
 	def createClassWidgets():
@@ -422,8 +466,10 @@ def run():
 	themeMenu = Menu(menuBar, tearoff = 0)
 	menuBar.add_cascade(label ='File', menu = fileMenu)
 	menuBar.add_cascade(label = 'Themes', menu = themeMenu)
-	fileMenu.add_command(label ='Open Folder', command = selectFolder)
 	fileMenu.add_command(label = "Create New Dataset", command = createDataset)
+	fileMenu.add_command(label = "Open Dataset", command = openDataset)
+	fileMenu.add_command(label ='Select Image Folder', command = selectFolder)
+	fileMenu.add_command(label ='Save Dataset', command = saveDataset)
 	themeMenu.add_command(label = "Light", command = switchLight)
 	themeMenu.add_command(label = "Dark", command = switchDark)
 	
