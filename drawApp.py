@@ -68,7 +68,21 @@ def run():
 			projectParameters = json.load(openfile)
 			global openedProject, path, classFrequencies, index, selectedClass
 			openedProject, path, classFrequencies, index, selectedClass = projectParameters.values()
+		for key in classFrequencies:
+			loadButton(key, classFrequencies[key][2])
 		displayImage()
+		drawPlot()
+		return
+	
+	def loadButton(className, rgb):
+		r, g, b = rgb
+		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
+		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(className), compound = "c")
+		newClass.image = classColor
+		rowNum = 0
+		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
+			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
+			rowNum += 1
 		return
 	
 	def saveDataset():
@@ -109,17 +123,10 @@ def run():
 		color = colorchooser.askcolor(title = "Choose Color for %s Class" % (className))
 		if color[0] == None:
 			return
-		r, g, b = color[0]
-		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
-		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(className), compound = "c")
-		newClass.image = classColor
-		classFrequencies[className] = [0, color[1], newClass]
+		loadButton(className, color[0])
+		classFrequencies[className] = [0, color[1], color[0]]
 		global selectedClass
 		selectedClass = className
-		rowNum = 0
-		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
-			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
-			rowNum += 1
 		drawPlot()
 		return
 	
@@ -371,7 +378,7 @@ def run():
 		figure = plt.Figure(figsize = (4.38, 7), dpi = 50)
 		axis = figure.add_subplot(111)
 		classFrequency = FigureCanvasTkAgg(figure, toolbarContainer)
-		cols = ["Frequency", "Color", "Button"]
+		cols = ["Frequency", "Color", "RGB"]
 		data = pd.DataFrame.from_dict(classFrequencies, orient = "index", columns = cols)
 		axis.set_xticks([])
 		axis.yaxis.set_tick_params(labelleft = False)
