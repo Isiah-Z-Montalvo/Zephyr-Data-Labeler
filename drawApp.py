@@ -241,9 +241,6 @@ def run():
 		classContainer.grid()
 		masterCanvas.grid()
 		toolbarContainer.grid()
-		
-		backButton.grid(row = 2, column = 0, pady = 5, sticky = "nw")
-		forwButton.grid(row = 2, column = 0, pady = 5, sticky = "ne")
 		displayImage()
 		return
 	
@@ -534,6 +531,8 @@ def run():
 		resizeTool.grid(row = 0, column = 1, padx = 5, pady = 5)
 		zoomOutTool.grid(row = 2, column = 1, padx = 5, pady = 5)
 		trashTool.grid(row = 1, column = 1, padx = 5, pady = 5)
+		backButton.grid(row = 2, column = 0, pady = 5, sticky = "nw")
+		forwButton.grid(row = 2, column = 0, pady = 5, sticky = "ne")
 		
 		master.update()
 		classContainer.update()
