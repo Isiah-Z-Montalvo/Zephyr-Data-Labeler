@@ -15,9 +15,11 @@ from os import listdir
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
-import json 
+import json
 
 path = ""
+projectPath = ""
+projectData = ""
 classFrequencies = {}
 buttonCursors = {"Standard" : "arrow", "Drag" : "fleur", "Resize" : "sizing", "Zoom" : "plus", "Delete" : "pirate"}
 resizingState = False
@@ -43,19 +45,27 @@ def run():
 					   })
 	
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	def createDataset():
-		fileTypes = [("Zephyr Dataset File", "*.json")]
-		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
-		fileName = file.name.split("/")[-1]
+	def createDataset(event, directoryEntry, directoryWindow):
+		directoryName = directoryEntry.get()
+		directoryWindow.destroy()
+		file = askdirectory()
+		directoryName = file + "/" + directoryName
+		fileName = directoryName.split("/")[-1]
+		os.mkdir(directoryName)
+		dataFile = open(directoryName + "/" + fileName + "Data" + ".txt", "x")
+		global path, classFrequencies, index, selectedClass, projectData
+		projectData = directoryName + "/" + fileName + "Data" + ".txt"
 		projectParameters = {
 			"projectName" : fileName,
-			"path" : "",
-			"classFrequencies" : {},
-			"index" : 0,
-			"selectedClass" : None
+			"imagePath" : path,
+			"classFrequencies" : classFrequencies,
+			"index" : index,
+			"selectedClass" : selectedClass,
+			"projectPath" : directoryName + "/",
+			"projectData" : projectData
 		}
-		with open(fileName, "w") as outfile:
-			json.dump(projectParameters, outfile)
+		with open(directoryName + "/" + fileName + ".json", "w") as outfile:
+			json.dump(projectParameters, outfile)		
 		global openedProject
 		openedProject = fileName
 		return
@@ -63,15 +73,16 @@ def run():
 	def openDataset():
 		fileTypes = [("Zephyr Dataset File", "*.json")]
 		file = askopenfilename(filetypes = fileTypes, defaultextension = fileTypes)
-		fileName = file.split("/")[-1]
-		with open(fileName, "r") as openfile:
+		with open(file, "r") as openfile:
 			projectParameters = json.load(openfile)
-			global openedProject, path, classFrequencies, index, selectedClass
-			openedProject, path, classFrequencies, index, selectedClass = projectParameters.values()
+			global openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData
+			openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData = projectParameters.values()
 		for key in classFrequencies:
 			loadButton(key, classFrequencies[key][2])
-		displayImage()
-		drawPlot()
+		if path != "":
+			displayImage()
+		if classFrequencies:
+			drawPlot()
 		return
 	
 	def loadButton(className, rgb):
@@ -89,18 +100,37 @@ def run():
 		fileTypes = [("Zephyr Dataset File", "*.json")]
 		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
 		fileName = file.name.split("/")[-1]
-		global openedProject, path, classFrequencies, index, selectedClass
+		fileName = fileName.split(".")[0]
+		global openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData
 		if fileName == openedProject:
 			projectParameters = {
 				"projectName" : openedProject,
-				"path" : path,
+				"imagePath" : path,
 				"classFrequencies" : classFrequencies,
 				"index" : index,
-				"selectedClass" : selectedClass
+				"selectedClass" : selectedClass,
+				"projectPath" : projectPath,
+				"projectData" : projectData
 			}
 			serialize = json.dumps(projectParameters)
-			with open(fileName, "w") as outfile:
+			with open(file.name, "w") as outfile:
 				outfile.write(serialize)
+		else:
+			print("error")
+		return
+	
+	def nameDirectory():
+		directoryWindow = Toplevel(master)
+		directoryWindow.title("Directory Name")
+		directoryWindow.geometry("300x100")
+		directoryNameLabel = Label(directoryWindow, text = "Directory Name:", font = ("Facon", 16))
+		directoryEntry = Entry(directoryWindow, width = 20, font = ("Facon", 12))
+		
+		directoryNameLabel.grid(row = 0, column = 0, padx = 15, pady = 5)
+		directoryEntry.grid(row = 1, column = 0, pady = 5)
+		directoryWindow.grab_set()
+		directoryWindow.resizable(False, False)
+		directoryWindow.bind("<Return>", lambda event: createDataset(event, directoryEntry, directoryWindow))
 		return
 	
 	def createClassWidgets():
@@ -154,11 +184,13 @@ def run():
 		return galleryContainer, galleryCanvas, galleryScrollbar, galleryFrame
 	
 	def assignGalleryLabels(galleryFrame):
+		count = 0
 		for image in os.listdir(path):
 			if ((image.endswith(".jpg")) or 
 				(image.endswith(".jpeg")) or 
 				(image.endswith(".png"))):
 				fullPath = os.path.join(path, image)
+				count += 1
 			else:
 				continue
 			pic = Image.open(fullPath)
@@ -166,6 +198,8 @@ def run():
 			picPI = ImageTk.PhotoImage(pic)
 			picLabel = Label(galleryFrame, image = picPI)
 			picLabel.image = picPI
+			if count >= 100:
+				break
 		return
 	
 	def renderGallery(galleryFrame, galleryCanvas):
@@ -473,7 +507,7 @@ def run():
 	themeMenu = Menu(menuBar, tearoff = 0)
 	menuBar.add_cascade(label ='File', menu = fileMenu)
 	menuBar.add_cascade(label = 'Themes', menu = themeMenu)
-	fileMenu.add_command(label = "Create New Dataset", command = createDataset)
+	fileMenu.add_command(label = "Create New Dataset", command = nameDirectory)
 	fileMenu.add_command(label = "Open Dataset", command = openDataset)
 	fileMenu.add_command(label ='Select Image Folder', command = selectFolder)
 	fileMenu.add_command(label ='Save Dataset', command = saveDataset)
