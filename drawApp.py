@@ -1,8 +1,7 @@
-# This will import all the widgets
-# and modules which are available in
-# tkinter and ttk module
+# Library Imports - - - - - - - - - - - - - - - - - - - - - - - - - -
 import math
 from tkinter import *
+import tkinter.messagebox
 from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
 from tkinter.filedialog import asksaveasfile
@@ -16,35 +15,35 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 import json
+# Library Imports - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Global Variables - - - - - - - - - - - - - - - - - - - - - - - - - -
 path = ""
 projectPath = ""
 projectData = ""
 classFrequencies = {}
+currentImage = ""
+originalImageSize = 0
+index = 0
 buttonCursors = {"Standard" : "arrow", "Drag" : "fleur", "Resize" : "sizing", "Zoom" : "plus", "Delete" : "pirate"}
 resizingState = False
 initialState = True
-index = 0
 selectedClass = None
 openedProject = None
+# Global Variables - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 def run():
+	# Create Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	master = Tk()
 	master.title("Zephyr Data Labeler")
 	#master.config(bg="#26242f")
 	master.geometry("1000x1000")
 	master.state("zoomed")
-	style = Style(master)
-	
-	style.theme_create("DarkenTheSkies", 
-					   settings = {
-						   "Vertical.TScrollbar": {
-							   "configure": {
-								   "background": "#26242f"
-							   }
-						   }
-					   })
-	
+	# Create Application - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	# Persistence Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def createDataset(event, directoryEntry, directoryWindow):
 		directoryName = directoryEntry.get()
 		directoryWindow.destroy()
@@ -52,9 +51,12 @@ def run():
 		directoryName = file + "/" + directoryName
 		fileName = directoryName.split("/")[-1]
 		os.mkdir(directoryName)
-		dataFile = open(directoryName + "/" + fileName + "Data" + ".txt", "x")
-		global path, classFrequencies, index, selectedClass, projectData
+		global path, classFrequencies, index, selectedClass, projectData, currentImage, originalImageSize
 		projectData = directoryName + "/" + fileName + "Data" + ".txt"
+		dataFile = open(projectData, "x")
+		dataFile = open(projectData, "w")
+		dataFile.write("Image, X, Y, Width, Height, Label\n")
+		dataFile.close()
 		projectParameters = {
 			"projectName" : fileName,
 			"imagePath" : path,
@@ -62,7 +64,9 @@ def run():
 			"index" : index,
 			"selectedClass" : selectedClass,
 			"projectPath" : directoryName + "/",
-			"projectData" : projectData
+			"projectData" : projectData,
+			"currentImage" : currentImage,
+			"originalImageSize" : originalImageSize
 		}
 		with open(directoryName + "/" + fileName + ".json", "w") as outfile:
 			json.dump(projectParameters, outfile)		
@@ -75,8 +79,8 @@ def run():
 		file = askopenfilename(filetypes = fileTypes, defaultextension = fileTypes)
 		with open(file, "r") as openfile:
 			projectParameters = json.load(openfile)
-			global openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData
-			openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData = projectParameters.values()
+			global openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData, currentImage, originalImageSize
+			openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData, currentImage, originalImageSize = projectParameters.values()
 		for key in classFrequencies:
 			loadButton(key, classFrequencies[key][2])
 		if path != "":
@@ -85,23 +89,12 @@ def run():
 			drawPlot()
 		return
 	
-	def loadButton(className, rgb):
-		r, g, b = rgb
-		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
-		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(className), compound = "c")
-		newClass.image = classColor
-		rowNum = 0
-		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
-			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
-			rowNum += 1
-		return
-	
 	def saveDataset():
 		fileTypes = [("Zephyr Dataset File", "*.json")]
 		file = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
 		fileName = file.name.split("/")[-1]
 		fileName = fileName.split(".")[0]
-		global openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData
+		global openedProject, path, classFrequencies, index, selectedClass, projectPath, projectData, currentImage, originalImageSize
 		if fileName == openedProject:
 			projectParameters = {
 				"projectName" : openedProject,
@@ -110,7 +103,9 @@ def run():
 				"index" : index,
 				"selectedClass" : selectedClass,
 				"projectPath" : projectPath,
-				"projectData" : projectData
+				"projectData" : projectData,
+				"currentImage" : currentImage,
+				"originalImageSize" : originalImageSize
 			}
 			serialize = json.dumps(projectParameters)
 			with open(file.name, "w") as outfile:
@@ -122,8 +117,8 @@ def run():
 	def nameDirectory():
 		directoryWindow = Toplevel(master)
 		directoryWindow.title("Directory Name")
-		directoryWindow.geometry("300x100")
-		directoryNameLabel = Label(directoryWindow, text = "Directory Name:", font = ("Facon", 16))
+		directoryWindow.geometry("350x100")
+		directoryNameLabel = Label(directoryWindow, text = "Enter a Directory Name:", font = ("Facon", 16))
 		directoryEntry = Entry(directoryWindow, width = 20, font = ("Facon", 12))
 		
 		directoryNameLabel.grid(row = 0, column = 0, padx = 15, pady = 5)
@@ -132,7 +127,9 @@ def run():
 		directoryWindow.resizable(False, False)
 		directoryWindow.bind("<Return>", lambda event: createDataset(event, directoryEntry, directoryWindow))
 		return
-	
+	# Persistence Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
+		
+	# CLass Creation Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def createClassWidgets():
 		classWindow = Toplevel(master)
 		classWindow.title("Class Name")
@@ -160,11 +157,24 @@ def run():
 		drawPlot()
 		return
 	
+	def loadButton(className, rgb):
+		r, g, b = rgb
+		classColor = ImageTk.PhotoImage(Image.new("RGBA", (200, 50), (r, g, b, 200)))
+		newClass = Button(classFrame, image = classColor, text = className, command = lambda: selectClass(className), compound = "c")
+		newClass.image = classColor
+		rowNum = 0
+		for i in range(len(classFrame.winfo_children()) - 1, -1, -1):
+			classFrame.winfo_children()[i].grid(row = rowNum, column = 0, padx = 10, pady = 5, sticky = "w")
+			rowNum += 1
+		return
+	
 	def selectClass(className):
 		global selectedClass
 		selectedClass = className
 		return
+	# CLass Creation Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
+	# Gallery Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def selectFolder():
 		global path
 		path = ""
@@ -253,16 +263,10 @@ def run():
 				renderGallery(galleryFrame, galleryCanvas)
 			resizingState = False
 		return
+	# Gallery Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
-	def switchLight():
-		master.config(bg="white")
-		return
-	
-	def switchDark():
-		master.config(bg="#26242f")
-		style.theme_use("DarkenTheSkies")
-		return
-	
+	# State/Tool Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
+	# Drag Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def mainUnbindings():
 		imageCanvas.config(cursor = buttonCursors["Standard"])
 		imageCanvas.unbind("<ButtonPress-1>")
@@ -303,7 +307,9 @@ def run():
 	def leaveBbox(event, state):
 		event.widget.config(cursor = buttonCursors[state])
 		return
+	# Drag Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
+	# Resize Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def resizeState():
 		mainUnbindings()
 		for bbox in imageCanvas.find_all()[1:]:
@@ -322,7 +328,9 @@ def run():
 		widget = event.widget.find_withtag("current")[0]
 		imageCanvas.coords(widget, initialX, initialY, event.x, event.y)
 		return
+	# Resize Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
+	# Zoom Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def zoomState():
 		mainUnbindings()
 		imageCanvas.config(cursor = buttonCursors["Zoom"])
@@ -344,6 +352,29 @@ def run():
 			imageCanvas.create_rectangle(bbox[0] * scalingWeight, bbox[1] * scalingWeight, bbox[2] * scalingWeight, bbox[3] * scalingWeight, outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
 		return
 	
+	def zoomOutState():
+		mainUnbindings()
+		imageCanvas.config(cursor =  buttonCursors["Zoom"])
+		imageCanvas.bind("<ButtonPress-1>", lambda event: zoomOutImage(event))
+		return
+	
+	def zoomOutImage(event):
+		bboxes = []
+		for bbox in imageCanvas.find_all()[1:]:
+			bboxes.append(imageCanvas.coords(bbox))
+		
+		imageCanvas.delete("all")
+		masterCanvas.delete("all")
+		
+		scalingWeight = 100 / imageCanvas.winfo_width()
+		scalingWeight = 1 - scalingWeight
+		displayImage(width = imageCanvas.winfo_width() - 100, height = imageCanvas.winfo_height() - 100)
+		for bbox in bboxes:
+			imageCanvas.create_rectangle(bbox[0] * scalingWeight, bbox[1] * scalingWeight, bbox[2] * scalingWeight, bbox[3] * scalingWeight, outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
+		return
+	# Zoom Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	# Bounding Box Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def boundingState():
 		mainUnbindings()
 		imageCanvas.config(cursor = "arrow")
@@ -367,28 +398,9 @@ def run():
 		classFrequencies[selectedClass][0] += 1
 		drawPlot()
 		return
+	# Bounding Box Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
-	def zoomOutState():
-		mainUnbindings()
-		imageCanvas.config(cursor =  buttonCursors["Zoom"])
-		imageCanvas.bind("<ButtonPress-1>", lambda event: zoomOutImage(event))
-		return
-	
-	def zoomOutImage(event):
-		bboxes = []
-		for bbox in imageCanvas.find_all()[1:]:
-			bboxes.append(imageCanvas.coords(bbox))
-		
-		imageCanvas.delete("all")
-		masterCanvas.delete("all")
-		
-		scalingWeight = 100 / imageCanvas.winfo_width()
-		scalingWeight = 1 - scalingWeight
-		displayImage(width = imageCanvas.winfo_width() - 100, height = imageCanvas.winfo_height() - 100)
-		for bbox in bboxes:
-			imageCanvas.create_rectangle(bbox[0] * scalingWeight, bbox[1] * scalingWeight, bbox[2] * scalingWeight, bbox[3] * scalingWeight, outline = classFrequencies[selectedClass][1], width = 2, tags = selectedClass)
-		return
-	
+	# Trash Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def trashState():
 		mainUnbindings()
 		for bbox in imageCanvas.find_all()[1:]:
@@ -404,7 +416,10 @@ def run():
 		drawPlot()
 		imageCanvas.config(cursor = buttonCursors[state])
 		return
+	# Trash Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
+	# State/Tool Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
+	# Display Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 	def drawPlot():
 		figure = plt.Figure(figsize = (4.38, 7), dpi = 50)
 		axis = figure.add_subplot(111)
@@ -418,15 +433,16 @@ def run():
 		return
 	
 	def displayImage(width = 500, height = 500):
-		global index
-		global path
+		global index, path, currentImage, originalImageSize
 		isImage = False
 		while isImage == False:
 			if ((os.listdir(path)[index].endswith(".jpg")) or 
 				(os.listdir(path)[index].endswith(".jpeg")) or 
 				(os.listdir(path)[index].endswith(".png"))):
-				fullPath = os.path.join(path, os.listdir(path)[index])
+				currentImage = os.listdir(path)[index]
+				fullPath = os.path.join(path, currentImage)
 				img = Image.open(fullPath)
+				originalImageSize = img.size[0]
 				img = img.resize((width, height))
 				img = ImageTk.PhotoImage(img)
 				imageCanvas.create_image(0, 0, anchor = NW, image = img)
@@ -458,6 +474,23 @@ def run():
 		index += 1
 		displayImage()
 		return
+	# Display Functions - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	def exportBoundingBoxes():
+		global currentImage, projectData, originalImageSize
+		resizeDifference = imageCanvas.winfo_width() - originalImageSize
+		scalingWeight = resizeDifference / imageCanvas.winfo_width()
+		scalingWeight = 1 - scalingWeight
+		dataFile = open(projectData, "a")
+		for bbox in imageCanvas.find_all()[1:]:
+			dataString = currentImage
+			label = imageCanvas.gettags(bbox)[0]
+			x, y, width, height = tuple([x * scalingWeight for x in imageCanvas.coords(bbox)])
+			dataString += ", " + str(x) + ", " + str(y) + ", " + str(width) + ", " + str(height) + ", " + label + "\n"
+			dataFile.write(dataString)
+		dataFile.close()
+		tkinter.messagebox.showinfo(title = "Export Successful", message = "Bounding Box data successfully written!")
+		return
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -465,7 +498,7 @@ def run():
 	logo.thumbnail((210, 210))
 	logo = ImageTk.PhotoImage(logo)
 	classContainer = Frame(master)
-	logoLabel = Label(classContainer, image = logo)
+	logoLabel = Button(classContainer, image = logo, command = exportBoundingBoxes)
 	classLabel = Label(classContainer, text = "Classes", font = ("Facon", 31))
 	classCanvas = Canvas(classContainer, highlightthickness = 0)
 	classScrollbar = Scrollbar(classContainer, orient = "vertical", command = classCanvas.yview)
@@ -475,7 +508,7 @@ def run():
 	pixelSize = ImageTk.PhotoImage(Image.new("RGBA", (200, 50)))
 	classButton = Button(classFrame, image = pixelSize, text = "Add New Class", command = createClassWidgets, compound = "c")
 	
-	masterCanvas = Canvas(master, highlightthickness = 0, bg = "black")
+	masterCanvas = Canvas(master, highlightthickness = 0)
 	imageCanvas = Canvas(masterCanvas, highlightthickness = 0)
 	
 	toolbarContainer = Frame(master)
@@ -501,15 +534,11 @@ def run():
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
 	menuBar = Menu(master)
 	fileMenu = Menu(menuBar, tearoff = 0)
-	themeMenu = Menu(menuBar, tearoff = 0)
 	menuBar.add_cascade(label ='File', menu = fileMenu)
-	menuBar.add_cascade(label = 'Themes', menu = themeMenu)
 	fileMenu.add_command(label = "Create New Dataset", command = nameDirectory)
 	fileMenu.add_command(label = "Open Dataset", command = openDataset)
 	fileMenu.add_command(label ='Select Image Folder', command = selectFolder)
 	fileMenu.add_command(label ='Save Dataset', command = saveDataset)
-	themeMenu.add_command(label = "Light", command = switchLight)
-	themeMenu.add_command(label = "Dark", command = switchDark)
 	
 	master.config(menu = menuBar)
 	
@@ -546,6 +575,16 @@ def run():
 	master.rowconfigure(row, weight = 1)
 	master.columnconfigure(column, weight = 1)
 	# Form Application - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	# Keyboard Shortcuts - - - - - - - - - - - - - - - - - - - - - - - - - -
+	master.bind("<Control-s>", lambda event: saveDataset())
+	master.bind("<Control-=>", lambda event: zoomCanvas(event))
+	master.bind("<Control-minus>", lambda event: zoomOutImage(event))
+	master.bind("<q>", lambda event: dragState())
+	master.bind("<w>", lambda event: resizeState())
+	master.bind("<e>", lambda event: boundingState())
+	master.bind("<r>", lambda event: trashState())
+	# Keyboard Shortcuts - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# mainloop, runs infinitely
 	mainloop()
