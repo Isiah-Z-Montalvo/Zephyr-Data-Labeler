@@ -494,8 +494,7 @@ def run():
 	# Functions - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	
 	# Main Page Widgets - - - - - - - - - - - - - - - - - - - - - - - - -
-	currentDirectory = os.getcwd()
-	logo = Image.open(currentDirectory + "\\Images\\Logo.png")
+	logo = Image.open("Images/Logo.png")
 	logo.thumbnail((210, 210))
 	logo = ImageTk.PhotoImage(logo)
 	classContainer = Frame(master)
@@ -514,14 +513,14 @@ def run():
 	
 	toolbarContainer = Frame(master)
 	toolbarFrame = LabelFrame(toolbarContainer, text = "Toolbar")
-	drag = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\DragIcon.png").resize((92, 92)))
-	box = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\BoundingBoxIcon.png").resize((92, 92)))
-	zoom = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\ZoomIcon.png").resize((92, 92)))
-	resize = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\ResizeIcon.png").resize((92, 92)))
-	zoomOut = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\ZoomOutIcon.png").resize((92, 92)))
-	trash = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\TrashIcon.png").resize((92, 92)))
-	backArr = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\BackArrow.png").resize((70, 70)))
-	forwArr = ImageTk.PhotoImage(Image.open(currentDirectory + "\\Images\\ForwardArrow.png").resize((70, 70)))
+	drag = ImageTk.PhotoImage(Image.open("Images/DragIcon.png").resize((92, 92)))
+	box = ImageTk.PhotoImage(Image.open("Images/BoundingBoxIcon.png").resize((92, 92)))
+	zoom = ImageTk.PhotoImage(Image.open("Images/ZoomIcon.png").resize((92, 92)))
+	resize = ImageTk.PhotoImage(Image.open("Images/ResizeIcon.png").resize((92, 92)))
+	zoomOut = ImageTk.PhotoImage(Image.open("Images/ZoomOutIcon.png").resize((92, 92)))
+	trash = ImageTk.PhotoImage(Image.open("Images/TrashIcon.png").resize((92, 92)))
+	backArr = ImageTk.PhotoImage(Image.open("Images/BackArrow.png").resize((70, 70)))
+	forwArr = ImageTk.PhotoImage(Image.open("Images/ForwardArrow.png").resize((70, 70)))
 	dragTool = Button(toolbarFrame, image = drag, command = dragState)
 	boundingTool = Button(toolbarFrame, image = box, command = boundingState)
 	zoomTool = Button(toolbarFrame, image = zoom, command = zoomState)
